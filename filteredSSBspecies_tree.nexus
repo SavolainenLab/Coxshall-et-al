@@ -1,0 +1,59 @@
+#NEXUS
+[R-package APE, Fri Feb  7 14:24:02 2025]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 23;
+	TAXLABELS
+		Nasalis_larvatus_ott860954
+		Rhinopithecus_roxellana_ott77083
+		Semnopithecus_entellus_ott276589
+		Colobus_vellerosus_ott39815
+		Papio_cynocephalus_ott115471
+		Papio_anubis_ott115449
+		Macaca_nigra_ott111862
+		Macaca_tonkeana_ott407753
+		Macaca_nemestrina_ott689656
+		Macaca_thibetana_ott111859
+		Macaca_arctoides_ott689665
+		Macaca_fascicularis_ott689668
+		Macaca_fuscata_ott689660
+		Macaca_mulatta_ott689650
+		Macaca_sylvanus_ott689645
+		Pan_troglodytes_ott417950
+		Pan_paniscus_ott158484
+		Gorilla_beringei_ott351685
+		Gorilla_gorilla_ott417965
+		Hylobates_lar_ott995038
+		Callithrix_jacchus_ott1015223
+		Saimiri_sciureus_ott842875
+		Sapajus_nigritus_ott411831
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Nasalis_larvatus_ott860954,
+		2	Rhinopithecus_roxellana_ott77083,
+		3	Semnopithecus_entellus_ott276589,
+		4	Colobus_vellerosus_ott39815,
+		5	Papio_cynocephalus_ott115471,
+		6	Papio_anubis_ott115449,
+		7	Macaca_nigra_ott111862,
+		8	Macaca_tonkeana_ott407753,
+		9	Macaca_nemestrina_ott689656,
+		10	Macaca_thibetana_ott111859,
+		11	Macaca_arctoides_ott689665,
+		12	Macaca_fascicularis_ott689668,
+		13	Macaca_fuscata_ott689660,
+		14	Macaca_mulatta_ott689650,
+		15	Macaca_sylvanus_ott689645,
+		16	Pan_troglodytes_ott417950,
+		17	Pan_paniscus_ott158484,
+		18	Gorilla_beringei_ott351685,
+		19	Gorilla_gorilla_ott417965,
+		20	Hylobates_lar_ott995038,
+		21	Callithrix_jacchus_ott1015223,
+		22	Saimiri_sciureus_ott842875,
+		23	Sapajus_nigritus_ott411831
+	;
+	TREE * UNTITLED = [&R] ((((((1:1,2:1)mrcaott786ott77080:1,3:1)mrcaott786ott43798:1,4:1)Colobinae_ott741061:1,((6:1,5:1)mrcaott485691ott554291:1,(15:1,(((7:1,8:1)mrcaott111862ott407753:1,9:1)mrcaott111862ott111864:1,((11:1,10:1)mrcaott115446ott689665:1,(12:1,(13:1,14:1)mrcaott689663ott5560516:1)mrcaott575292ott689663:1)mrcaott115446ott575292:1)mrcaott111862ott115446:1)Macaca_ott268324:1)mrcaott33609ott111862:1)mrcaott786ott5512:1,(((16:1,17:1)Pan_ott417957:1,(18:1,19:1)Gorilla_ott417969:1)Homininae_ott312031:1,20:1)mrcaott83926ott96938:1)mrcaott786ott83926:1,(21:1,(22:1,23:1)mrcaott93900ott197032:1)mrcaott2025ott93900:1)Simiiformes_ott386195;
+END;
