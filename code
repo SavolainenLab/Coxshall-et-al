@@ -1,0 +1,3313 @@
+setwd("Z:/Chloe Coxshall/Literature Analysis (C1)/Data and Analysis ONLY")
+
+
+##### Create Primate Phylogenetic Trees #####
+
+install.packages("rotl")
+install.packages("ape")
+install.packages("phangorn")
+
+library(phangorn)
+library(rotl)
+library(ape)
+
+##Full Species List Tree
+primates <- tnrs_match_names(names = "Primates")
+print(primates)
+primate_tree <- tol_subtree(ott_id = primates$ott_id)
+plot.phylo(primate_tree)
+write.nexus(primate_tree, file = "primate_tree.nexus")
+
+prunedspecies_list <- c("Allenopithecus_nigroviridis", "Allocebus_trichotis", "Allochrocebus_lhoesti", "Allochrocebus_preussi", "Allochrocebus_solatus", "Alouatta_arctoidea", "Alouatta_belzebul", "Alouatta_caraya", "Alouatta_discolor", "Alouatta_juara", "Alouatta_nigerrima", "Alouatta_palliata", "Alouatta_pigra", "Alouatta_sara", "Alouatta_seniculus", "Alouatta_ululata", "Aotus_azarae", "Aotus_brumbacki", "Aotus_griseimembra", "Aotus_jorgehernandezi", "Aotus_lemurinus", "Aotus_miconax", "Aotus_nancymaae", "Aotus_nigriceps", "Aotus_trivirgatus", "Aotus_vociferans", "Aotus_zonalis", "Arctocebus_aureus", "Arctocebus_calabarensis", "Ateles_belzebuth", "Ateles_fusciceps", "Ateles_geoffroyi", "Ateles_marginatus", "Ateles_paniscus", "Avahi_betsileo", "Avahi_cleesei", "Avahi_laniger", "Avahi_meridionalis", "Avahi_mooreorum", "Avahi_occidentalis", "Avahi_peyrierasi", "Avahi_ramanantsoavani", "Avahi_unicolor", "Brachyteles_arachnoides", "Brachyteles_hypoxanthus", "Cacajao_ayresi", "Cacajao_calvus", "Cacajao_hosomi", "Cacajao_melanocephalus", "Callicebus_barbarabrownae", "Callicebus_caquetensis", "Callicebus_coimbrai", "Callicebus_discolor", "Callicebus_dubius", "Callicebus_melanochir", "Callicebus_nigrifrons", "Callicebus_ornatus", "Callicebus_personatus", "Callimico_goeldii", "Callithrix_aurita", "Callithrix_flaviceps", "Callithrix_geoffroyi", "Callithrix_humeralifer", "Callithrix_humilis", "Callithrix_jacchus", "Callithrix_kuhlii", "Callithrix_penicillata", "Callithrix_pygmaea", "Carlito_syrichta", "Cebuella_niveiventris", "Cebus_aequatorialis", "Cebus_albifrons", "Cebus_brunneus", "Cebus_capucinus", "Cebus_cesarae", "Cebus_cuscinus", "Cebus_imitator", "Cebus_kaapori", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_olivaceus", "Cebus_unicolor", "Cebus_versicolor", "Cebus_yuracus", "Cephalopachus_bancanus", "Cercocebus_agilis", "Cercocebus_atys", "Cercocebus_chrysogaster", "Cercocebus_galeritus", "Cercocebus_sanjei", "Cercocebus_torquatus", "Cercopithecus_albogularis", "Cercopithecus_ascanius", "Cercopithecus_buettikoferi", "Cercopithecus_lowei", "Cercopithecus_cephus", "Cercopithecus_denti", "Cercopithecus_diana", "Cercopithecus_doggetti", "Cercopithecus_dryas", "Cercopithecus_erythrogaster", "Cercopithecus_hamlyni", "Cercopithecus_kandti", "Cercopithecus_lomamiensis", "Cercopithecus_mitis", "Cercopithecus_mona", 
+                        "Cercopithecus_neglectus", "Cercopithecus_nicticans", "Cercopithecus_petaurista", "Cercopithecus_pogonias", "Cercopithecus_roloway", "Cercopithecus_sclateri", "Cercopithecus_wolfi", "Cheirogaleus_andysabini", "Cheirogaleus_crossleyi", "Cheirogaleus_lavasoensis", "Cheirogaleus_major", "Cheirogaleus_medius", "Cheirogaleus_minusculus", "Cheirogaleus_shethi", "Cheirogaleus_sibreei", "Cheirogaleus_thomasi", "Cheracebus_lucifer", "Cheracebus_lugens", "Cheracebus_medemi", "Cheracebus_purinus", "Cheracebus_regulus", "Cheracebus_torquatus", "Chiropotes_albinasus", "Chiropotes_sagulata", "Chiropotes_israelita", "Chiropotes_satanas", "Chiropotes_utahickae", "Chlorocebus_aethiops", "Chlorocebus_cynosuros", "Chlorocebus_djamdjamensis", "Chlorocebus_pygerythrus", "Chlorocebus_sabaeus", "Colobus_angolensis", "Colobus_guereza", "Colobus_polykomos", "Colobus_satanas", "Colobus_vellerosus", "Daubentonia_madagascariensis", "Erythrocebus_patas", "Erythrocebus_poliophaeus", "Eulemur_albifrons", "Eulemur_cinereiceps", "Eulemur_coronatus", "Eulemur_flavifrons", "Eulemur_fulvus", "Eulemur_macaco", "Eulemur_mongoz", "Eulemur_rubriventer", "Eulemur_rufifrons", "Eulemur_rufus", "Eulemur_sanfordi", "Euoticus_elegantulus", "Euoticus_pallidus", "Galago_alleni", "Galago_gabonensis", "Galago_gallarum", "Galago_granti", "Galago_matschiei", "Galago_minor", "Galago_moholi", "Galago_senegalensis", 
+                        "Galagoides_kumbirensis", "Galagoides_orinus", "Galagoides_rondoensis", "Galagoides_thomasi", "Galagoides_zanzibaricus", "Gorilla_beringei", "Gorilla_gorilla", "Hapalemur_alaotrensis", "Hapalemur_aureus", "Hapalemur_griseus", "Hapalemur_occidentalis", "Hoolock_hoolock", "Hoolock_leuconedys", "Hoolock_tianxing", "Hylobates_agilis", "Hylobates_albibarbis", "Hylobates_klossii", "Hylobates_lar", "Hylobates_moloch", "Hylobates_muelleri", "Hylobates_pileatus", "Indri_indri", "Lagothrix_cana", "Lagothrix_flavicauda", "Lagothrix_lagotricha", "Lagothrix_lugens", "Lagothrix_poeppigii", "Lagothrix_tschudii", "Lemur_catta", "Leontopithecus_caissara", "Leontopithecus_chrysomelas", "Leontopithecus_chrysopygus", "Leontopithecus_rosalia", "Lepilemur_aeeclis", "Lepilemur_ahmansonorum", "Lepilemur_ankaranensis", "Lepilemur_betsileo", "Lepilemur_dorsalis", "Lepilemur_edwardsi", "Lepilemur_fleuretae", 
+                        "Lepilemur_grewcockorum", "Lepilemur_hollandorum", "Lepilemur_hubbardorum", "Lepilemur_jamesorum", "Lepilemur_leucopus", "Lepilemur_manasamody", "Lepilemur_microdon", "Lepilemur_milanoii", "Lepilemur_mitsinjoensis", "Lepilemur_mittermeieri", "Lepilemur_mustelinus", "Lepilemur_otto", "Lepilemur_petteri", "Lepilemur_randrianasoloi", "Lepilemur_ruficaudatus", "Lepilemur_sahamalazensis", "Lepilemur_scottorum", "Lepilemur_seali", "Lepilemur_septentrionalis", "Lepilemur_tymerlachsoni", "Lepilemur_wrightae", "Lophocebus_albigena", "Lophocebus_aterrimus", "Loris_lydekkerianus", "Loris_tardigradus", "Macaca_arctoides", "Macaca_assamensis", "Macaca_brunnescens", "Macaca_cyclopis", "Macaca_fascicularis", "Macaca_fuscata", "Macaca_hecki", "Macaca_leonina", "Macaca_leucogenys", "Macaca_maura", "Macaca_mulatta", "Macaca_munzala", "Macaca_nemestrina", "Macaca_nigra", "Macaca_nigrescens", "Macaca_ochreata", "Macaca_pagensis", "Macaca_radiata", "Macaca_siberu", "Macaca_silenus", "Macaca_sinica", "Macaca_speciosa", "Macaca_sylvanus", "Macaca_thibetana", "Macaca_tonkeana", "Mandrillus_leucophaeus", "Mandrillus_sphinx", "Mico_acariensis", "Mico_argentatus", "Mico_chrysoleucus", "Mico_emiliae", "Mico_humeralifer", "Mico_intermedius", "Mico_leucippe", "Mico_marcai", "Mico_mauesi", "Mico_melanurus", "Mico_munduruku", "Mico_nigriceps", "Mico_rondoni", "Mico_saterei", "Microcebus_arnholdi", "Microcebus_berthae", "Microcebus_bongolavensis", "Microcebus_boraha", "Microcebus_danfossi", "Microcebus_ganzhorni", "Microcebus_gerpi", "Microcebus_griseorufus", "Microcebus_jollyae", "Microcebus_lehilahytsara", "Microcebus_macarthurii", "Microcebus_mamiratra", "Microcebus_manitatra", "Microcebus_margotmarshae", "Microcebus_marohita", "Microcebus_mittermeieri", "Microcebus_murinus", "Microcebus_myoxinus", "Microcebus_ravelobensis", "Microcebus_rufus", "Microcebus_sambiranensis", "Microcebus_simmonsi", "Microcebus_tanosi", "Microcebus_tavaratra", "Miopithecus_ogouensis", "Miopithecus_talapoin", "Mirza_coquereli", "Mirza_zaza", "Nasalis_larvatus", "Nomascus_annamensis", "Nomascus_concolor", "Nomascus_gabriellae", "Nomascus_hainanus", "Nomascus_leucogenys", "Nomascus_nasutus", "Nomascus_siki", "Nycticebus_bancanus", "Nycticebus_bengalensis", "Nycticebus_borneanus", "Nycticebus_coucang", "Nycticebus_javanicus", 
+                        "Nycticebus_kayan", "Nycticebus_pygmaeus", "Otolemur_crassicaudatus", "Otolemur_garnettii", "Otolemur_monteiri", "Pan_paniscus", "Pan_troglodytes", "Papio_anubis", "Papio_cynocephalus", "Papio_hamadryas", "Papio_kindae", "Papio_papio", "Papio_ursinus", "Paragalago_cocos", "Paragalago_zanzibaricus", "Perodicticus_potto", "Phaner_electromontis", "Phaner_furcifer", "Phaner_pallescens", "Phaner_parienti", "Piliocolobus_badius", "Piliocolobus_bouvieri", "Piliocolobus_epieni", "Piliocolobus_foai", "Piliocolobus_gordonorum", "Piliocolobus_kirkii", "Piliocolobus_lulindicus", "Piliocolobus_oustaleti", "Piliocolobus_parmentieri", "Piliocolobus_pennantii", "Piliocolobus_preussi", "Piliocolobus_rufomitratus", "Piliocolobus_semlikiensis", "Piliocolobus_tephrosceles", "Piliocolobus_tholloni", "Piliocolobus_waldronae", "Pithecia_aequatorialis", "Pithecia_albicans", "Pithecia_cazuzai", "Pithecia_chrysocephala", "Pithecia_hirsuta", "Pithecia_inusta", "Pithecia_irrorata", "Pithecia_isabela", "Pithecia_milleri", "Pithecia_mittermeieri", "Pithecia_monachus", "Pithecia_napensis", "Pithecia_pissinattii", "Pithecia_pithecia", "Pithecia_rylandsi", "Pithecia_vanzolinii", "Plecturocebus_aureipalatii", "Plecturocebus_baptista", "Plecturocebus_bernhardi", "Plecturocebus_brunneus", "Plecturocebus_cinerascens", "Plecturocebus_cupreus", "Plecturocebus_donacophilus", "Plecturocebus_grovesi", "Plecturocebus_hoffmannsi", "Plecturocebus_miltoni", "Plecturocebus_modestus", "Plecturocebus_moloch", "Plecturocebus_oenanthe", "Plecturocebus_olallae", "Plecturocebus_pallescens", "Plecturocebus_stephennashi", "Plecturocebus_toppini", "Plecturocebus_urubambensis", "Plecturocebus_vieirai", "Pongo_abelii", "Pongo_pygmaeus", "Pongo_tapanuliensis", "Presbytis_canicrus", "Presbytis_chrysomelas", "Presbytis_comata", "Presbytis_femoralis", "Presbytis_frontata", "Presbytis_hosei", "Presbytis_melalophos", "Presbytis_natunae", "Presbytis_pileata", "Presbytis_potenziani", "Presbytis_robinsoni", "Presbytis_rubicunda", "Presbytis_sabana", "Presbytis_siamensis", "Presbytis_thomasi", "Procolobus_verus", "Prolemur_simus", "Propithecus_candidus", "Propithecus_coquereli", "Propithecus_deckenii", "Propithecus_diadema", "Propithecus_edwardsi", "Propithecus_perrieri", "Propithecus_tattersalli", "Propithecus_verreauxi",
+                        "Pseudopotto_martini", "Pygathrix_cinerea", "Pygathrix_nemaeus", "Pygathrix_nigripes", "Rhinopithecus_avunculus", "Rhinopithecus_bieti", "Rhinopithecus_brelichi", "Rhinopithecus_roxellana", "Rhinopithecus_strykeri", "Rungwecebus_kipunji", "Saguinus_bicolor", "Saguinus_cruzlimai", "Saguinus_fuscicollis", "Saguinus_geoffroyi", "Saguinus_graellsi", "Saguinus_imperator", "Saguinus_inustus", "Saguinus_labiatus", "Saguinus_leucopus", "Saguinus_martinsi", "Saguinus_melanoleucus", "Saguinus_midas", "Saguinus_mystax", "Saguinus_niger", "Saguinus_nigricollis", "Saguinus_oedipus", "Saguinus_tripartitus", "Saguinus_ursulus", "Saimiri_boliviensis", "Saimiri_cassiquiarensis", "Saimiri_oerstedii", "Saimiri_sciureus", "Saimiri_ustus", "Saimiri_vanzolinii", "Sapajus_apella", "Sapajus_cay", "Sapajus_flavius", "Sapajus_libidinosus", "Sapajus_nigritus", "Sapajus_xanthosternos", "Sciurocheirus_makandensis", "Semnopithecus_ajax", "Semnopithecus_entellus", "Semnopithecus_hector", "Semnopithecus_hypoleucos", "Semnopithecus_natunae", "Semnopithecus_priam", "Semnopithecus_schistaceus", "Simias_concolor", "Symphalangus_syndactylus", "Tarsius_dentatus", "Tarsius_fuscus", "Tarsius_lariang", "Tarsius_pelengensis", "Tarsius_pumilus", "Tarsius_sangirensis", "Tarsius_spectrumgurskyae", "Tarsius_supriatnai", "Tarsius_tarsier", "Tarsius_tumpara", "Tarsius_wallacei", "Theropithecus_gelada", "Trachypithecus_auratus", "Trachypithecus_barbei", "Trachypithecus_cristatus", "Trachypithecus_delacouri", "Trachypithecus_ebenus", "Trachypithecus_francoisi", "Trachypithecus_geei", "Trachypithecus_germaini", "Trachypithecus_hatinhensis", "Trachypithecus_johnii", "Trachypithecus_laotum", "Trachypithecus_mauritius", "Trachypithecus_obscurus", "Trachypithecus_phayrei", "Trachypithecus_poliocephalus", "Trachypithecus_selangorensis", "Trachypithecus_shortridgei", "Trachypithecus_vetulus", "Varecia_rubra", "Varecia_variegata")
+prunedspecies_match <- tnrs_match_names(names = prunedspecies_list)
+prunedspecies_tree <- tol_induced_subtree(ott_ids = prunedspecies_match$ott_id)
+prunedspecies_tree <- compute.brlen(prunedspecies_tree, method = "Grafen")
+plot.phylo(prunedspecies_tree)
+write.nexus(prunedspecies_tree, file = "pruned_species_tree.nexus")
+
+species_list <- c("Ateles_fusciceps", "Ateles_geoffroyi", "Callithrix_jacchus", "Callithrix_penicillata", 
+                  "Cebus_albifrons", "Cebus_capucinus", "Cebus_imitator", "Cebus_olivaceus", 
+                  "Cercocebus_atys", "Cercopithecus_ascanius", "Cercopithecus_mona", 
+                  "Chlorocebus_pygerythrus", "Colobus_guereza", "Colobus_vellerosus", "Erythrocebus_patas", 
+                  "Eulemur_fulvus", "Galago_moholi", "Gorilla_beringei", "Gorilla_gorilla", "Hylobates_lar", 
+                  "Lagothrix_lagotricha", "Lagothrix_poeppigii", "Leontopithecus_rosalia", "Lophocebus_albigena", 
+                  "Macaca_arctoides", "Macaca_fascicularis", "Macaca_fuscata", "Macaca_maura", "Macaca_mulatta", 
+                  "Macaca_nemestrina", "Macaca_nigra", "Macaca_radiata", "Macaca_silenus", "Macaca_sylvanus", 
+                  "Macaca_thibetana", "Macaca_tonkeana", "Miopithecus_talapoin", "Nasalis_larvatus", "Pan_paniscus", 
+                  "Pan_troglodytes", "Papio_anubis", "Papio_cynocephalus", "Papio_hamadryas", "Pongo_abelii", 
+                  "Pongo_pygmaeus", "Propithecus_verreauxi", "Rhinopithecus_roxellana", "Saguinus_fuscicollis", 
+                  "Saguinus_geoffroyi", "Saguinus_mystax", "Saguinus_oedipus", "Saimiri_sciureus", "Sapajus_apella", 
+                  "Sapajus_libidinosus", "Sapajus_nigritus", "Sapajus_xanthosternos", "Semnopithecus_entellus", 
+                  "Symphalangus_syndactylus", "Theropithecus_gelada", "Trachypithecus_johnii")
+
+species_match <- tnrs_match_names(names = species_list)
+
+species_tree <- tol_induced_subtree(ott_ids = species_match$ott_id)
+
+if (is.null(species_tree$edge.length)) {
+  species_tree$edge.length <- rep(1, nrow(species_tree$edge))
+}
+
+plot.phylo(species_tree)
+
+write.nexus(species_tree, file = "SSBspecies_tree.nexus")
+
+
+##Filtered SSB Species Tree
+species_list <- c("Callithrix_jacchus", "Colobus_vellerosus", "Gorilla_beringei", "Gorilla_gorilla", 
+                  "Hylobates_lar", "Macaca_arctoides", "Macaca_fascicularis", "Macaca_fuscata", 
+                  "Macaca_mulatta", "Macaca_nemestrina", "Macaca_nigra", "Macaca_sylvanus", 
+                  "Macaca_thibetana", "Macaca_tonkeana", "Nasalis_larvatus", "Pan_paniscus", 
+                  "Pan_troglodytes", "Papio_anubis", "Papio_cynocephalus", "Rhinopithecus_roxellana", 
+                  "Saimiri_sciureus", "Sapajus_nigritus", "Semnopithecus_entellus")
+
+species_match <- tnrs_match_names(names = species_list)
+
+species_tree <- tol_induced_subtree(ott_ids = species_match$ott_id)
+
+if (is.null(species_tree$edge.length)) {
+  species_tree$edge.length <- rep(1, nrow(species_tree$edge))
+}
+
+plot.phylo(species_tree)
+
+write.nexus(species_tree, file = "filteredSSBspecies_tree.nexus")
+
+
+##Phylogenetic Tree Figure 
+install.packages("BiocManager")
+BiocManager::install("ggtree")
+install.packages(c("ggplot2", "remotes", "stringr"))
+remotes::install_github("YuLab-SMU/ggtreeExtra")
+
+library(ape)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(ggtree)
+library(readr)
+
+full_tree <- read.nexus("pruned_species_tree.nexus")
+
+data <- read_csv("full_dataframe.csv") %>%
+  rename(label = nexus_name)
+
+# Assign tree tip labels
+tree <- full_tree
+tree$tip.label <- full_tree$tip.label
+
+data_in_tree <- data %>% filter(label %in% tree$tip.label)
+
+# Create named list of tips per Category
+tiplist_by_category <- split(data_in_tree$label, data_in_tree$Category)
+
+# Assign groups to tree tips using groupOTU
+grouped_tree <- groupOTU(tree, tiplist_by_category)
+
+# Plot the grouped tree
+p <- ggtree(grouped_tree, layout = "circular", aes(color = group)) +
+  geom_tree(size = 0.6) +
+  scale_color_manual(values = c(
+    "Strepsirrhini" = "#00BFC4",
+    "Platyrrhini" = "#66a61e",
+    "Cercopithecidae" = "#F4A3C1",
+    "Hominoidae" = "#6A3D9A",
+    "Hylobatidae" = "#FFB000",
+    "Tarsiiformes" = "#C71E1D"
+  ), na.value = "grey70") +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "right",
+    plot.margin = margin(2, 2, 2, 2, "cm")
+  )
+
+p
+
+
+
+##### Phylogenetic Signal of SSB #####
+
+library(ape)
+library(geiger)
+
+tree <- read.nexus("pruned_species_tree.nexus")
+ssb_data <- read.csv("full_dataframe.csv", stringsAsFactors = FALSE)
+
+ssb_data <- ssb_data[, c("nexus_name", "ssb_presence")]
+ssb_data$nexus_name <- as.character(ssb_data$nexus_name)
+ssb_data$ssb_presence <- as.numeric(ssb_data$ssb_presence)
+
+tree <- drop.tip(tree, setdiff(tree$tip.label, ssb_data$nexus_name))
+
+ssb_data <- ssb_data[ssb_data$nexus_name %in% tree$tip.label, ]
+
+tree <- multi2di(tree) 
+
+ssb_vector <- ssb_data$ssb_presence
+names(ssb_vector) <- ssb_data$nexus_name
+ssb_vector <- ssb_vector + 1  
+
+fit <- fitDiscrete(tree, ssb_vector, model = "ER", transform = "lambda")
+print(fit)
+
+
+
+##### Prepare Data for Analysis #####
+install.packages("caper")
+install.packages("ape")
+install.packages("phylolm")
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("Rphylopars")
+install.packages("tibble")
+
+library(caper)
+library(ape)  
+library(phylolm)
+library(ggplot2)
+library(dplyr)
+library(Rphylopars)
+library(tibble)
+
+data <- read.csv("full_dataframe.csv")  
+ssbdata <- read.csv("filtered_ssb_dataframe.csv")
+tree <- read.nexus("pruned_species_tree.nexus")  
+ssbtree <- read.nexus("filteredSSBspecies_tree.nexus")
+
+rownames(data) <- data$nexus_name
+pruned_tree <- drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
+
+rownames(ssbdata) <- ssbdata$nexus_name
+pruned_ssb_tree <- drop.tip(ssbtree, setdiff(ssbtree$tip.label, rownames(ssbdata)))
+
+
+
+##### ENVIRONMENT #####
+
+#Imputation - full dataset
+env_data_full <- data %>%
+  filter(nexus_name %in% pruned_tree$tip.label) %>%
+  select(nexus_name,
+         mean_temp_2019,
+         mean_precip_2019,
+         mean_cloud_2019,
+         mean_biomass_2019,
+         predator_count) %>%
+  rename(species = nexus_name)
+
+env_imputed_full <- phylopars(trait_data = env_data_full, tree = pruned_tree)
+
+env_traits_full <- env_imputed_full$anc_recon[pruned_tree$tip.label, ]
+
+head(env_traits_full)
+dim(env_traits_full)
+
+
+#Imputation - subset
+env_data_subset <- ssbdata %>%
+  filter(nexus_name %in% pruned_ssb_tree$tip.label) %>%
+  select(nexus_name,
+         mean_temp_2019,
+         mean_precip_2019,
+         mean_cloud_2019,
+         mean_biomass_2019,
+         predator_count) %>%
+  rename(species = nexus_name)
+
+env_imputed_subset <- phylopars(trait_data = env_data_subset, tree = pruned_ssb_tree)
+
+env_traits_subset <- env_imputed_subset$anc_recon[pruned_ssb_tree$tip.label, ]
+
+head(env_traits_subset)
+dim(env_traits_subset)
+
+
+#Phylogenetic Regression - Environment and SSB Occurrence (59 species)
+matched_species <- intersect(rownames(env_traits_full), data$nexus_name)
+
+env_traits_matched <- env_traits_full[matched_species, ]
+
+data_matched <- data %>%
+  filter(nexus_name %in% matched_species) %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  # Make sure it's numeric
+
+rownames(data_matched) <- data_matched$nexus_name
+
+env_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  env_traits_matched
+)
+
+env_model_data <- env_model_data[!is.na(env_model_data$SSB_binary), ]
+
+env_model_data <- env_model_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+env_phyloglm <- phyloglm(
+  SSB_binary ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_model_data,
+  phy = pruned_tree,
+  method = "logistic_MPLE",
+  btol = 12
+)
+
+summary(env_phyloglm)
+
+
+#Phylogenetic Regression - Environment and SSB Prevalence (23 species)
+rownames(ssbdata) <- ssbdata$nexus_name
+
+species_subset <- rownames(env_traits_subset)
+
+prevalence_vec <- ssbdata[species_subset, "ssb_prevalence"]  
+
+env_subset_data <- data.frame(
+  ssb_presence = prevalence_vec,
+  env_traits_subset[species_subset, ]
+)
+
+env_subset_data <- env_subset_data[!is.na(env_subset_data$ssb_presence), ]
+
+env_subset_data <- env_subset_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+final_species <- rownames(env_subset_data)
+final_ssb_tree <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, final_species))
+
+length(final_ssb_tree$tip.label)  
+nrow(env_subset_data)
+
+env_phylolm <- phylolm(
+  ssb_presence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_subset_data,
+  phy = pruned_ssb_tree,
+  model = "lambda"
+)
+
+summary(env_phylolm)
+
+
+
+
+## SSB prevalence filtered for ethogram completeness
+# --- SSB prevalence model filtered by ethogram completeness (using your objects) ---
+
+# 0) Ensure ssb_ethogram is in ssbdata; if not, pull it from `data` by nexus_name
+if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) {
+  ssbdata$ssb_ethogram <- data[match(ssbdata$nexus_name, data$nexus_name), "ssb_ethogram"]
+}
+
+# 1) Filter to ethogram==1 and align to env_traits_subset
+rownames(ssbdata) <- ssbdata$nexus_name
+ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
+rownames(ssb_etho) <- ssb_etho$nexus_name
+
+species_subset <- intersect(rownames(env_traits_subset), rownames(ssb_etho))
+
+# 2) Build analysis frame (prevalence) and drop NAs
+env_subset_data <- data.frame(
+  ssb_prevalence = ssb_etho[species_subset, "ssb_prevalence"],
+  env_traits_subset[species_subset, , drop = FALSE]
+)
+env_subset_data <- env_subset_data[!is.na(env_subset_data$ssb_prevalence), , drop = FALSE]
+
+# 3) Scale predictors
+env_subset_data$mean_temp_2019    <- as.numeric(scale(env_subset_data$mean_temp_2019))
+env_subset_data$mean_precip_2019  <- as.numeric(scale(env_subset_data$mean_precip_2019))
+env_subset_data$mean_cloud_2019   <- as.numeric(scale(env_subset_data$mean_cloud_2019))
+env_subset_data$mean_biomass_2019 <- as.numeric(scale(env_subset_data$mean_biomass_2019))
+env_subset_data$predator_count    <- as.numeric(scale(env_subset_data$predator_count))
+
+# 4) Prune & align tree, then fit model (NOTE: use final_ssb_tree here)
+final_ssb_tree <- drop.tip(pruned_ssb_tree,
+                           setdiff(pruned_ssb_tree$tip.label, rownames(env_subset_data)))
+env_subset_data <- env_subset_data[final_ssb_tree$tip.label, , drop = FALSE]
+stopifnot(identical(rownames(env_subset_data), final_ssb_tree$tip.label))
+
+env_phylolm <- phylolm::phylolm(
+  ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data  = env_subset_data,
+  phy   = final_ssb_tree,
+  model = "lambda"
+)
+
+summary(env_phylolm)
+
+
+
+
+
+## Hurdle model 
+library(dplyr)
+library(ape)
+library(brms)
+
+ data <- read.csv("full_dataframe.csv")
+ rownames(data) <- data$nexus_name
+
+env_vars <- c("nexus_name","ssb_prevalence",
+              "mean_temp_2019","mean_precip_2019","mean_cloud_2019",
+              "mean_biomass_2019","predator_count")
+
+d0 <- data[, env_vars]
+
+d1 <- d0 |> filter(if_all(everything(), ~ !is.na(.)))
+
+species_in_data <- unique(d1$nexus_name)
+tree1 <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_in_data))
+
+d1 <- d1 |> filter(nexus_name %in% tree1$tip.label)
+
+# Build and order phylogenetic correlation matrix
+A <- vcv(tree1, corr = TRUE)
+A <- A[tree1$tip.label, tree1$tip.label]
+
+d1$nexus_name <- factor(d1$nexus_name, levels = rownames(A))
+
+scale_cols <- c("mean_temp_2019","mean_precip_2019","mean_cloud_2019",
+                "mean_biomass_2019","predator_count")
+d1 <- d1 |> mutate(across(all_of(scale_cols), scale))
+
+fam <- hurdle_lognormal()
+
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),        # phylo RE sd (positive part)
+  prior(exponential(1), class = "sigma")      # residual sd (positive part)
+)
+
+brms_hurdle_env <- brm(
+  bf(
+    ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+      mean_biomass_2019 + predator_count +
+      (1 | gr(nexus_name, cov = A)),
+    hu ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+      mean_biomass_2019 + predator_count
+  ),
+  data   = d1,
+  family = fam,
+  data2  = list(A = A),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_env)
+
+fixef(brms_hurdle_env, parm = "^b_")       
+fixef(brms_hurdle_env, parm = "^b_hu_")    
+pp_check(brms_hurdle_env)
+loo(brms_hurdle_env)
+
+
+
+
+## Hurdle model filtered for ethogram completeness
+library(dplyr)
+library(ape)
+library(brms)
+
+data <- read.csv("full_dataframe.csv")
+rownames(data) <- data$nexus_name
+
+env_vars <- c("nexus_name","ssb_prevalence","ssb_ethogram",
+              "mean_temp_2019","mean_precip_2019","mean_cloud_2019",
+              "mean_biomass_2019","predator_count")
+
+d0 <- data[, env_vars]
+
+## Keep zeros for non-ethogram species; positives only from ethogram==1 species
+d1 <- d0 |>
+  mutate(
+    ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
+    ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
+  ) |>
+  ## Drop rows only if predictors (not response) are missing
+  filter(if_all(c("nexus_name","mean_temp_2019","mean_precip_2019","mean_cloud_2019",
+                  "mean_biomass_2019","predator_count"), ~ !is.na(.)))
+# If you prefer to drop ethogram==1 with missing prevalence instead of setting 0:
+# |> filter(!(ssb_ethogram == 1 & is.na(ssb_prevalence)))
+
+species_in_data <- unique(d1$nexus_name)
+tree1 <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_in_data))
+d1 <- d1 |> filter(nexus_name %in% tree1$tip.label)
+
+# Phylo correlation matrix
+A <- vcv(tree1, corr = TRUE)
+A <- A[tree1$tip.label, tree1$tip.label]
+d1$nexus_name <- factor(d1$nexus_name, levels = rownames(A))
+
+# Scale predictors
+scale_cols <- c("mean_temp_2019","mean_precip_2019","mean_cloud_2019",
+                "mean_biomass_2019","predator_count")
+d1 <- d1 |> mutate(across(all_of(scale_cols), scale))
+
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_env <- brm(
+  bf(
+    ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+      mean_biomass_2019 + predator_count +
+      (1 | gr(nexus_name, cov = A)),
+    hu ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+      mean_biomass_2019 + predator_count
+  ),
+  data   = d1,
+  family = fam,
+  data2  = list(A = A),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_env)
+fixef(brms_hurdle_env, parm = "^b_")        # positive part
+fixef(brms_hurdle_env, parm = "^b_hu_")     # hurdle part
+pp_check(brms_hurdle_env)
+loo(brms_hurdle_env)
+
+
+
+
+
+
+##### LIFE HISTORY #####
+
+#Imputation - full dataset
+lifehist_data_full <- data %>%
+  filter(nexus_name %in% pruned_tree$tip.label) %>%
+  select(nexus_name,
+         size_dimorphism_presence,
+         median_body_size,
+         body_size_range,
+         lifespan,
+         sex_ratio) %>%
+  rename(
+    species = nexus_name,
+    sexual_dimorphism = size_dimorphism_presence,
+    median_body_mass = median_body_size,
+    bodymass_range = body_size_range,
+    adult_sex_ratio = sex_ratio
+  )
+
+lifehist_data_full[, -1] <- lapply(lifehist_data_full[, -1], function(x) as.numeric(as.character(x)))
+
+lifehist_imputed_full <- phylopars(trait_data = lifehist_data_full, tree = pruned_tree)
+
+lifehist_traits_full <- lifehist_imputed_full$anc_recon[pruned_tree$tip.label, ]
+head(lifehist_traits_full)
+
+
+#Imputation - subset
+lifehist_data_subset <- ssbdata %>%
+  filter(nexus_name %in% pruned_ssb_tree$tip.label) %>%
+  select(nexus_name,
+         size_dimorphism_presence,
+         median_body_size,
+         body_size_range,
+         lifespan,
+         sex_ratio) %>%
+  rename(
+    species = nexus_name,
+    sexual_dimorphism = size_dimorphism_presence,
+    median_body_mass = median_body_size,
+    bodymass_range = body_size_range,
+    adult_sex_ratio = sex_ratio
+  )
+
+lifehist_data_subset[, -1] <- lapply(lifehist_data_subset[, -1], function(x) as.numeric(as.character(x)))
+
+lifehist_imputed_subset <- phylopars(trait_data = lifehist_data_subset, tree = pruned_ssb_tree)
+
+lifehist_traits_subset <- lifehist_imputed_subset$anc_recon[pruned_ssb_tree$tip.label, ]
+head(lifehist_traits_subset)
+
+
+#Phylogenetic Regression - Life History and SSB Occurrence (59 species)
+lifehist_model_data <- data.frame(
+  SSB_binary = data$ssb_presence[match(rownames(lifehist_traits_full), data$nexus_name)],
+  lifehist_traits_full
+)
+
+lifehist_model_data[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")] <- 
+  scale(lifehist_model_data[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")])
+
+lifehist_phyloglm <- phyloglm(
+  SSB_binary ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data,
+  phy = pruned_tree,
+  method = "logistic_MPLE",
+  btol = 16
+)
+
+summary(lifehist_phyloglm)
+
+
+#Phylogenetic Regression - Life History and SSB Prevalence (23 species)
+lifehist_scaled_subset <- scale(lifehist_traits_subset)
+
+ssb_prevalence_vector <- setNames(ssbdata$ssb_prevalence, ssbdata$nexus_name)
+
+lifehist_model_data_subset <- data.frame(
+  ssb_presence = ssb_prevalence_vector[rownames(lifehist_traits_subset)],
+  lifehist_scaled_subset
+)
+
+lifehist_model_subset <- phylolm(
+  ssb_presence ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data_subset,
+  phy = final_ssb_tree,
+  model = "lambda"
+)
+
+summary(lifehist_model_subset)
+
+
+
+
+## SSB prevalence filtered for ethogram completeness
+## --- Life history × SSB prevalence (ethogram-filtered) ---
+
+# 0) Ensure ssb_ethogram is present in ssbdata (pull from `data` only if missing)
+if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) {
+  ssbdata$ssb_ethogram <- data[match(ssbdata$nexus_name, data$nexus_name), "ssb_ethogram"]
+}
+rownames(ssbdata) <- ssbdata$nexus_name
+
+# 1) Filter to ethogram==1 and intersect with life-history subset
+ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
+rownames(ssb_etho) <- ssb_etho$nexus_name
+
+species_lh <- intersect(rownames(lifehist_traits_subset), rownames(ssb_etho))
+
+# 2) Scale life-history predictors & build analysis frame
+lifehist_scaled_subset <- as.data.frame(scale(lifehist_traits_subset))
+lifehist_model_data_subset <- data.frame(
+  ssb_prevalence = ssb_etho[species_lh, "ssb_prevalence"],
+  lifehist_scaled_subset[species_lh, c("sexual_dimorphism",
+                                       "median_body_mass",
+                                       "bodymass_range",
+                                       "lifespan",
+                                       "adult_sex_ratio"), drop = FALSE]
+)
+
+# Drop NAs in response
+lifehist_model_data_subset <- lifehist_model_data_subset[!is.na(lifehist_model_data_subset$ssb_prevalence), , drop = FALSE]
+
+# 3) Prune & align tree to these species (make a fresh tree for this model)
+final_lh_tree <- ape::drop.tip(pruned_ssb_tree,
+                               setdiff(pruned_ssb_tree$tip.label, rownames(lifehist_model_data_subset)))
+lifehist_model_data_subset <- lifehist_model_data_subset[final_lh_tree$tip.label, , drop = FALSE]
+stopifnot(identical(rownames(lifehist_model_data_subset), final_lh_tree$tip.label))
+
+# 4) Fit phylolm (Gaussian, λ)
+lifehist_model_subset <- phylolm::phylolm(
+  ssb_prevalence ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data  = lifehist_model_data_subset,
+  phy   = final_lh_tree,
+  model = "lambda"
+)
+
+summary(lifehist_model_subset)
+
+
+
+
+
+
+## Hurdle model
+library(dplyr)
+library(ape)
+library(brms)
+
+lifehist_predictors <- c("sexual_dimorphism",
+                         "median_body_mass",
+                         "bodymass_range",
+                         "lifespan",
+                         "adult_sex_ratio")
+
+species_lh <- intersect(rownames(lifehist_traits_full), data$nexus_name)
+
+d0_lh <- data.frame(
+  nexus_name      = species_lh,
+  ssb_prevalence  = data[species_lh, "ssb_prevalence"],
+  ssb_ethogram    = data[species_lh, "ssb_ethogram"],   # <-- add ethogram
+  lifehist_traits_full[species_lh, lifehist_predictors, drop = FALSE]
+)
+
+## Ethogram-qualified response:
+## - ethogram==1 keeps observed prevalence
+## - otherwise set to 0 (keep zeros for the hurdle)
+d1_lh <- d0_lh |>
+  mutate(
+    ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
+    ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
+  ) |>
+  # Drop rows only if predictors (not response) are missing
+  filter(if_all(c("nexus_name", all_of(lifehist_predictors)), ~ !is.na(.)))
+# If you prefer to drop ethogram==1 with missing/non-positive prevalence, uncomment:
+# d1_lh <- d1_lh |> filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0)))
+
+## Tree + covariance
+tree_lh <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_lh$nexus_name))
+d1_lh   <- d1_lh |> filter(nexus_name %in% tree_lh$tip.label)
+
+A_lh <- vcv(tree_lh, corr = TRUE)
+A_lh <- A_lh[tree_lh$tip.label, tree_lh$tip.label]
+
+d1_lh$nexus_name <- factor(d1_lh$nexus_name, levels = rownames(A_lh))
+
+## Scale predictors
+d1_lh <- d1_lh |> mutate(across(all_of(lifehist_predictors), scale))
+
+## Family + priors (as in your original)
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_lifehist <- brm(
+  bf(
+    ssb_prevalence ~ sexual_dimorphism + median_body_mass + bodymass_range +
+      lifespan + adult_sex_ratio +
+      (1 | gr(nexus_name, cov = A_lh)),
+    hu ~ sexual_dimorphism + median_body_mass + bodymass_range +
+      lifespan + adult_sex_ratio
+  ),
+  data   = d1_lh,
+  family = fam,
+  data2  = list(A_lh = A_lh),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_lifehist)
+fixef(brms_hurdle_lifehist, parm = "^b_")       # positive part
+fixef(brms_hurdle_lifehist, parm = "^b_hu_")    # hurdle (zero) part
+pp_check(brms_hurdle_lifehist)
+loo(brms_hurdle_lifehist)
+
+
+
+
+
+## Hurdle filtered for ethogram completeness
+# Hurdle model – Life history (ethogram-qualified)
+library(dplyr)
+library(ape)
+library(brms)
+
+data <- read.csv("full_dataframe.csv")
+rownames(data) <- data$nexus_name
+
+lh_vars <- c("nexus_name","ssb_prevalence","ssb_ethogram",
+             "sexual_dimorphism","median_body_mass","bodymass_range",
+             "lifespan","adult_sex_ratio")
+
+d0 <- data[, lh_vars]
+
+## Keep zeros for non-ethogram species; positives only from ethogram==1 species
+d1 <- d0 |>
+  mutate(
+    ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
+    ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
+  ) |>
+  # Drop rows only if predictors (not response) are missing
+  filter(if_all(c("nexus_name","sexual_dimorphism","median_body_mass",
+                  "bodymass_range","lifespan","adult_sex_ratio"), ~ !is.na(.)))
+# If you prefer to drop ethogram==1 with missing prevalence instead of setting 0:
+# d1 <- d1 |> filter(!(ssb_ethogram == 1 & is.na(ssb_prevalence)))
+
+species_in_data <- unique(d1$nexus_name)
+tree_lh <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_in_data))
+d1 <- d1 |> filter(nexus_name %in% tree_lh$tip.label)
+
+# Phylo correlation matrix
+A_lh <- vcv(tree_lh, corr = TRUE)
+A_lh <- A_lh[tree_lh$tip.label, tree_lh$tip.label]
+d1$nexus_name <- factor(d1$nexus_name, levels = rownames(A_lh))
+
+# Scale predictors
+scale_cols <- c("sexual_dimorphism","median_body_mass","bodymass_range",
+                "lifespan","adult_sex_ratio")
+d1 <- d1 |> mutate(across(all_of(scale_cols), scale))
+
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_lifehist <- brm(
+  bf(
+    ssb_prevalence ~ sexual_dimorphism + median_body_mass + bodymass_range +
+      lifespan + adult_sex_ratio +
+      (1 | gr(nexus_name, cov = A_lh)),
+    hu ~ sexual_dimorphism + median_body_mass + bodymass_range +
+      lifespan + adult_sex_ratio
+  ),
+  data   = d1,
+  family = fam,
+  data2  = list(A_lh = A_lh),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_lifehist)
+fixef(brms_hurdle_lifehist, parm = "^b_")       # positive part
+fixef(brms_hurdle_lifehist, parm = "^b_hu_")    # hurdle (zero) part
+pp_check(brms_hurdle_lifehist)
+loo(brms_hurdle_lifehist)
+
+
+
+
+  
+
+
+
+
+##### SOCIAL #####
+
+#Imputation - full dataset
+social_data_full <- data.frame(
+  species = data$nexus_name,
+  median_group_size = data$median_group_size
+)
+
+social_data_full$median_group_size <- as.numeric(as.character(social_data_full$median_group_size))
+
+social_data_full <- social_data_full %>%
+  filter(species %in% pruned_tree$tip.label)
+
+social_imputed_full <- phylopars(trait_data = social_data_full, tree = pruned_tree)
+
+social_traits_full <- social_imputed_full$anc_recon
+
+
+#Imputation - subset
+social_data_subset <- data.frame(
+  species = ssbdata$nexus_name,
+  median_group_size = ssbdata$median_group_size
+)
+
+social_imputed_subset <- phylopars(trait_data = social_data_subset, tree = pruned_ssb_tree)
+
+social_traits_subset <- social_imputed_subset$anc_recon
+
+
+#Phylogenetic Regressions - Social and SSB Occurrence (59 species) - not used in main text due to inflate SE
+social_traits_full_df <- as.data.frame(social_traits_full[pruned_tree$tip.label, , drop=FALSE])
+
+data_clean <- data[data$nexus_name %in% rownames(social_traits_full_df), ]
+
+social_traits_full_ordered <- social_traits_full_df[match(data_clean$nexus_name, rownames(social_traits_full_df)), , drop=FALSE]
+
+social_model_data_full <- data.frame(
+  SSB_binary = data_clean$ssb_presence,
+  median_group_size = social_traits_full_ordered$median_group_size,
+  group_structure = data_clean$group_structure,
+  hierarchical_structure = data_clean$hierarchical_structure,
+  mating_system = data_clean$mating_system,
+  infant_rearing_strategy = data_clean$infant_rearing_strategy
+)
+
+rownames(social_model_data_full) <- data_clean$nexus_name
+
+social_model_data_full_complete <- social_model_data_full[complete.cases(social_model_data_full), ]
+
+social_model_data_full_complete$group_structure <- as.factor(social_model_data_full_complete$group_structure)
+social_model_data_full_complete$hierarchical_structure <- as.factor(social_model_data_full_complete$hierarchical_structure)
+social_model_data_full_complete$mating_system <- as.factor(social_model_data_full_complete$mating_system)
+social_model_data_full_complete$infant_rearing_strategy <- as.factor(social_model_data_full_complete$infant_rearing_strategy)
+
+social_model_data_full_complete$group_structure <- droplevels(social_model_data_full_complete$group_structure)
+social_model_data_full_complete$hierarchical_structure <- droplevels(social_model_data_full_complete$hierarchical_structure)
+social_model_data_full_complete$mating_system <- droplevels(social_model_data_full_complete$mating_system)
+social_model_data_full_complete$infant_rearing_strategy <- droplevels(social_model_data_full_complete$infant_rearing_strategy)
+
+species_to_keep <- rownames(social_model_data_full_complete)
+pruned_tree_complete <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_to_keep))
+
+social_model_data_full_complete$group_size_scaled <- scale(social_model_data_full_complete$median_group_size)
+
+model_social_full <- phyloglm(
+  SSB_binary ~ group_size_scaled + group_structure + hierarchical_structure +
+    mating_system + infant_rearing_strategy,
+  data = social_model_data_full_complete,
+  phy = pruned_tree_complete,
+  method = "logistic_MPLE",
+  btol = 40
+)
+
+summary(model_social_full)
+
+
+#Phylogenetic Regression - Simplified Social and SSB Occurrence (59 species - group size, group structure, hierarchy) - not used in main text (exploratory)
+group_formation_plus_hierarchy_model <- phyloglm(
+  SSB_binary ~ median_group_size + group_structure + hierarchical_structure,
+  data = social_model_data_full_complete,
+  phy = pruned_tree_complete,
+  method = "logistic_MPLE",
+  btol = 100,
+  log.alpha.bound = 12
+)
+
+summary(group_formation_plus_hierarchy_model)
+
+
+#Phylogenetic Regression - Simplified Social and SSB Occurrence (59 species - group size, group structure, collapsed hierarchy) - used in main text
+data$hierarchical_collapsed <- as.character(data$hierarchical_structure) 
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Matriarchal", "Patriarchal")] <- "High"
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Egalitarian", "Dominant pair")] <- "Low"
+data$hierarchical_collapsed <- factor(data$hierarchical_collapsed, levels = c("Low", "High"))
+
+
+social_model_data_full <- data.frame(
+  species = data$nexus_name,
+  SSB_binary = data$ssb_presence,
+  median_group_size = as.numeric(as.character(data$median_group_size)),
+  group_structure = factor(data$group_structure),  
+  hierarchical_structure = data$hierarchical_collapsed
+)
+
+social_model_data_full_complete <- social_model_data_full %>% 
+  filter(complete.cases(.))
+
+social_model_data_full_complete$median_group_size <- scale(social_model_data_full_complete$median_group_size)
+
+rownames(social_model_data_full_complete) <- social_model_data_full_complete$species
+
+species_to_keep <- rownames(social_model_data_full_complete)
+
+missing_species <- setdiff(species_to_keep, pruned_tree$tip.label)
+if(length(missing_species) > 0){
+  message("Species in data NOT found in tree tips: ", paste(head(missing_species, 10), collapse = ", "))
+}
+
+pruned_tree_complete <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_to_keep))
+
+if(is.null(pruned_tree_complete)){
+  stop("All tips dropped from tree after pruning. Check species names!")
+}
+
+group_formation_model <- phyloglm(
+  SSB_binary ~ median_group_size + group_structure + hierarchical_structure,
+  data = social_model_data_full_complete,
+  phy = pruned_tree_complete,
+  method = "logistic_MPLE",
+  btol = 10,
+  log.alpha.bound = 12
+)
+
+summary(group_formation_model)
+
+
+#Phylogenetic Regression - Simplified Social and SSB Occurrence (59 species - group size, collapsed group structure, collapsed hierarchy) - not used in main text (exploratory)
+
+tree_pruned <- drop.tip(tree, setdiff(tree$tip.label, data$nexus_name))
+data_pruned <- data[data$nexus_name %in% tree$tip.label, ]
+
+data_pruned$group_structure_collapsed <- ifelse(data_pruned$group_structure %in% c("Monogamous pairs", "Solitary"),
+                                                "mono/solitary", "complex")
+data_pruned$hierarchy_collapsed <- ifelse(data_pruned$hierarchical_structure %in% c("Patriarchal", "Matriarchal"),
+                                          "high", "low")
+
+data_pruned$group_size_scaled <- as.numeric(scale(data_pruned$median_group_size))
+
+data_social <- data_pruned[
+  !is.na(data_pruned$ssb_presence) &
+    !is.na(data_pruned$group_size_scaled),
+]
+
+data_social$group_structure_collapsed <- factor(data_social$group_structure_collapsed)
+data_social$group_structure_collapsed <- droplevels(data_social$group_structure_collapsed)
+
+data_social$hierarchy_collapsed <- factor(data_social$hierarchy_collapsed)
+data_social$hierarchy_collapsed <- droplevels(data_social$hierarchy_collapsed)
+
+tree_social <- drop.tip(tree, setdiff(tree$tip.label, data_social$nexus_name))
+
+table(data_social$group_structure_collapsed)
+table(data_social$hierarchy_collapsed)
+
+model_social_phyloglm <- phyloglm(ssb_presence ~ group_size_scaled +
+                                    group_structure_collapsed +
+                                    hierarchy_collapsed,
+                                  data = data_social,
+                                  phy = tree_social,
+                                  method = "logistic_MPLE")
+
+summary(model_social_phyloglm)
+
+
+#Phylogenetic regression - Social and SSB Prevalence (23 species) - model failed due to small sample size and limited variance in predictors
+social_traits_subset <- ssbdata[, c("nexus_name", "median_group_size", "hierarchical_structure", 
+                                    "group_structure", "mating_system", "infant_rearing_strategy")]
+rownames(social_traits_subset) <- social_traits_subset$nexus_name
+
+social_numeric <- social_traits_subset[, "median_group_size", drop = FALSE]
+social_categorical <- social_traits_subset[, c("hierarchical_structure", "group_structure", 
+                                               "mating_system", "infant_rearing_strategy")]
+
+social_scaled_numeric <- scale(social_numeric)
+
+social_scaled_subset <- data.frame(social_scaled_numeric, social_categorical)
+rownames(social_scaled_subset) <- rownames(social_traits_subset)
+
+ssb_prevalence_vector <- setNames(ssbdata$ssb_prevalence, ssbdata$nexus_name)
+
+social_model_data_subset <- data.frame(
+  ssb_presence = ssb_prevalence_vector[rownames(social_scaled_subset)],
+  social_scaled_subset
+)
+
+social_model_data_subset <- na.omit(social_model_data_subset)
+
+social_model_data_subset$hierarchical_structure <- as.factor(social_model_data_subset$hierarchical_structure)
+social_model_data_subset$group_structure <- as.factor(social_model_data_subset$group_structure)
+social_model_data_subset$mating_system <- as.factor(social_model_data_subset$mating_system)
+social_model_data_subset$infant_rearing_strategy <- as.factor(social_model_data_subset$infant_rearing_strategy)
+
+social_model_subset <- phylolm(
+  ssb_presence ~ median_group_size + hierarchical_structure + group_structure + 
+    mating_system + infant_rearing_strategy,
+  data = social_model_data_subset,
+  phy = final_ssb_tree,
+  model = "lambda"
+)
+
+summary(social_model_subset)
+
+
+
+
+## SSB Prevalence filtered for ethogram completeness
+## --- Social × SSB prevalence (ethogram-filtered) ---
+
+# 0) Ensure ssb_ethogram exists in ssbdata (pull from `data` only if missing)
+if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) {
+  ssbdata$ssb_ethogram <- data[match(ssbdata$nexus_name, data$nexus_name), "ssb_ethogram"]
+}
+rownames(ssbdata) <- ssbdata$nexus_name
+
+# 1) Build your social trait subset (as you had it)
+social_traits_subset <- ssbdata[, c("nexus_name", "median_group_size", "hierarchical_structure",
+                                    "group_structure", "mating_system", "infant_rearing_strategy")]
+rownames(social_traits_subset) <- social_traits_subset$nexus_name
+
+social_numeric      <- social_traits_subset[, "median_group_size", drop = FALSE]
+social_categorical  <- social_traits_subset[, c("hierarchical_structure", "group_structure",
+                                                "mating_system", "infant_rearing_strategy")]
+
+social_scaled_numeric <- scale(social_numeric)
+social_scaled_subset  <- data.frame(social_scaled_numeric, social_categorical)
+rownames(social_scaled_subset) <- rownames(social_traits_subset)
+
+# 2) Filter to ethogram==1 and intersect with social subset
+ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
+rownames(ssb_etho) <- ssb_etho$nexus_name
+
+species_soc <- intersect(rownames(social_scaled_subset), rownames(ssb_etho))
+
+# 3) Build analysis frame (prevalence) and clean NAs
+social_model_data_subset <- data.frame(
+  ssb_prevalence = ssb_etho[species_soc, "ssb_prevalence"],
+  social_scaled_subset[species_soc, , drop = FALSE]
+)
+social_model_data_subset <- na.omit(social_model_data_subset)
+
+# factors + drop unused levels
+fac_cols <- c("hierarchical_structure", "group_structure", "mating_system", "infant_rearing_strategy")
+for (cc in fac_cols) {
+  if (cc %in% names(social_model_data_subset)) {
+    social_model_data_subset[[cc]] <- droplevels(factor(social_model_data_subset[[cc]]))
+  }
+}
+
+# 4) Prune & align tree
+final_soc_tree <- ape::drop.tip(pruned_ssb_tree,
+                                setdiff(pruned_ssb_tree$tip.label, rownames(social_model_data_subset)))
+social_model_data_subset <- social_model_data_subset[final_soc_tree$tip.label, , drop = FALSE]
+stopifnot(identical(rownames(social_model_data_subset), final_soc_tree$tip.label))
+
+# 5) Build formula, automatically skipping any factor that collapsed to 1 level
+keep_factors <- fac_cols[fac_cols %in% names(social_model_data_subset)]
+keep_factors <- keep_factors[sapply(social_model_data_subset[keep_factors], nlevels) > 1]
+rhs_terms    <- c("median_group_size", keep_factors)
+form_soc     <- as.formula(paste("ssb_prevalence ~", paste(rhs_terms, collapse = " + ")))
+cat("Social model RHS terms:", paste(rhs_terms, collapse = " + "), "\n")
+
+# 6) Fit phylolm (Gaussian, λ)
+social_model_subset <- phylolm::phylolm(
+  formula = form_soc,
+  data    = social_model_data_subset,
+  phy     = final_soc_tree,
+  model   = "lambda"
+)
+
+summary(social_model_subset)
+
+
+
+
+
+#Phylogenetic Regression - Simplified Social and SSB Prevalence (23 species - group size, collapsed group structure, collapsed hierarchy) - model failed due to small sample size and limited variance in predictors
+ssbdata$hierarchical_collapsed <- as.character(ssbdata$hierarchical_structure)
+ssbdata$hierarchical_collapsed[ssbdata$hierarchical_collapsed %in% c("Matriarchal", "Patriarchal")] <- "High"
+ssbdata$hierarchical_collapsed[ssbdata$hierarchical_collapsed %in% c("Egalitarian", "Dominant pair")] <- "Low"
+ssbdata$hierarchical_collapsed[is.na(ssbdata$hierarchical_structure)] <- NA
+ssbdata$hierarchical_collapsed <- factor(ssbdata$hierarchical_collapsed, levels = c("Low", "High"))
+
+ssbdata$group_structure_collapsed <- ifelse(
+  is.na(ssbdata$group_structure), NA,
+  ifelse(ssbdata$group_structure %in% c("Monogamous pairs", "Solitary"),
+         "mono/solitary", "complex")
+)
+ssbdata$group_structure_collapsed <- factor(ssbdata$group_structure_collapsed, levels = c("complex", "mono/solitary"))
+
+ssbdata$group_size_scaled <- scale(ssbdata$median_group_size)
+
+ssbdata$log_prevalence <- log1p(ssbdata$ssb_prevalence)
+
+rownames(ssbdata) <- ssbdata$nexus_name
+
+ssbtree_pruned <- drop.tip(ssbtree, setdiff(ssbtree$tip.label, rownames(ssbdata)))
+
+model_data <- ssbdata[complete.cases(ssbdata[, c("log_prevalence", "group_size_scaled", 
+                                                 "group_structure_collapsed", "hierarchical_collapsed")]), ]
+
+model_prevalence <- phylolm(
+  log_prevalence ~ group_size_scaled + group_structure_collapsed + hierarchical_collapsed,
+  data = model_data,
+  phy = drop.tip(ssbtree_pruned, setdiff(ssbtree_pruned$tip.label, rownames(model_data))),
+  model = "lambda"
+)
+
+summary(model_prevalence)
+
+
+
+
+## SSB Prevalence filtered for ethogram completeness
+## --- Ensure collapsed vars exist (keeps your definitions) ---
+if (!"hierarchical_collapsed" %in% names(ssbdata)) {
+  ssbdata$hierarchical_collapsed <- as.character(ssbdata$hierarchical_structure)
+  ssbdata$hierarchical_collapsed[ssbdata$hierarchical_collapsed %in% c("Matriarchal","Patriarchal")] <- "High"
+  ssbdata$hierarchical_collapsed[ssbdata$hierarchical_collapsed %in% c("Egalitarian","Dominant pair")] <- "Low"
+  ssbdata$hierarchical_collapsed[is.na(ssbdata$hierarchical_structure)] <- NA
+  ssbdata$hierarchical_collapsed <- factor(ssbdata$hierarchical_collapsed, levels = c("Low","High"))
+}
+if (!"group_structure_collapsed" %in% names(ssbdata)) {
+  ssbdata$group_structure_collapsed <- ifelse(
+    is.na(ssbdata$group_structure), NA,
+    ifelse(ssbdata$group_structure %in% c("Monogamous pairs","Solitary"),
+           "mono/solitary", "complex")
+  )
+  ssbdata$group_structure_collapsed <- factor(ssbdata$group_structure_collapsed,
+                                              levels = c("complex","mono/solitary"))
+}
+if (!"group_size_scaled" %in% names(ssbdata)) {
+  ssbdata$group_size_scaled <- as.numeric(scale(ssbdata$median_group_size))
+}
+if (!"log_prevalence" %in% names(ssbdata)) {
+  ssbdata$log_prevalence <- log1p(ssbdata$ssb_prevalence)
+}
+
+rownames(ssbdata) <- ssbdata$nexus_name
+
+## --- Filter to ethogram==1 and build model data ---
+if (!"ssb_ethogram" %in% names(ssbdata)) stop("ssb_ethogram not found in ssbdata.")
+ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
+rownames(ssb_etho) <- ssb_etho$nexus_name
+
+model_data <- ssb_etho[complete.cases(
+  ssb_etho[, c("log_prevalence","group_size_scaled",
+               "group_structure_collapsed","hierarchical_collapsed")]
+), c("log_prevalence","group_size_scaled",
+     "group_structure_collapsed","hierarchical_collapsed"), drop = FALSE]
+
+## Drop unused factor levels
+model_data$group_structure_collapsed <- droplevels(model_data$group_structure_collapsed)
+model_data$hierarchical_collapsed    <- droplevels(model_data$hierarchical_collapsed)
+
+## --- Prune & align tree ---
+ssbtree_pruned <- drop.tip(ssbtree, setdiff(ssbtree$tip.label, rownames(ssbdata)))
+final_tree     <- drop.tip(ssbtree_pruned, setdiff(ssbtree_pruned$tip.label, rownames(model_data)))
+model_data     <- model_data[final_tree$tip.label, , drop = FALSE]
+stopifnot(identical(rownames(model_data), final_tree$tip.label))
+
+## --- Build formula (auto-drop any factor that collapsed to 1 level) ---
+keep_factors <- c()
+if ("group_structure_collapsed" %in% names(model_data) && nlevels(model_data$group_structure_collapsed) > 1)
+  keep_factors <- c(keep_factors, "group_structure_collapsed")
+if ("hierarchical_collapsed" %in% names(model_data) && nlevels(model_data$hierarchical_collapsed) > 1)
+  keep_factors <- c(keep_factors, "hierarchical_collapsed")
+
+rhs_terms <- c("group_size_scaled", keep_factors)
+form_soc_prev <- as.formula(paste("log_prevalence ~", paste(rhs_terms, collapse = " + ")))
+cat("Fitting with terms:", paste(rhs_terms, collapse = " + "), "\n")
+
+## --- Fit phylolm (Gaussian, λ) ---
+model_prevalence_etho <- phylolm(
+  form_soc_prev,
+  data = model_data,
+  phy  = final_tree,
+  model = "lambda"
+)
+summary(model_prevalence_etho)
+
+
+
+## Hurdle model - full (not used in main text)
+library(dplyr)
+library(ape)
+library(brms)
+
+social_predictors_traits <- c("median_group_size")  # from social_traits_full
+social_predictors_data   <- c("group_structure", "hierarchical_structure",
+                              "mating_system", "infant_rearing_strategy") 
+
+species_social <- intersect(rownames(social_traits_full), data$nexus_name)
+
+stopifnot("median_group_size" %in% colnames(social_traits_full))
+
+d0_social <- data.frame(
+  nexus_name         = species_social,
+  ssb_prevalence     = data[species_social, "ssb_prevalence"],
+  median_group_size  = social_traits_full[species_social, "median_group_size"],
+  group_structure    = data[species_social, "group_structure"],
+  hierarchical_structure = data[species_social, "hierarchical_structure"],
+  mating_system      = data[species_social, "mating_system"],
+  infant_rearing_strategy = data[species_social, "infant_rearing_strategy"],
+  stringsAsFactors = FALSE
+)
+
+d1_social <- d0_social %>% filter(if_all(everything(), ~ !is.na(.)))
+
+tree_social <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_social$nexus_name))
+d1_social   <- d1_social %>% filter(nexus_name %in% tree_social$tip.label)
+
+A_social <- vcv(tree_social, corr = TRUE)
+A_social <- A_social[tree_social$tip.label, tree_social$tip.label]
+
+d1_social$nexus_name <- factor(d1_social$nexus_name, levels = rownames(A_social))
+
+d1_social$group_size_scaled <- scale(d1_social$median_group_size)
+d1_social$group_structure         <- factor(d1_social$group_structure)
+d1_social$hierarchical_structure  <- factor(d1_social$hierarchical_structure)
+d1_social$mating_system           <- factor(d1_social$mating_system)
+d1_social$infant_rearing_strategy <- factor(d1_social$infant_rearing_strategy)
+
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_social <- brm(
+  bf(
+    ssb_prevalence ~ group_size_scaled + group_structure + hierarchical_structure +
+      mating_system + infant_rearing_strategy +
+      (1 | gr(nexus_name, cov = A_social)),
+    hu ~ group_size_scaled + group_structure + hierarchical_structure +
+      mating_system + infant_rearing_strategy
+  ),
+  data   = d1_social,
+  family = fam,
+  data2  = list(A_social = A_social),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_social)
+
+fixef(brms_hurdle_social, parm = "^b_")    
+fixef(brms_hurdle_social, parm = "^b_hu_") 
+pp_check(brms_hurdle_social)
+loo(brms_hurdle_social)
+
+
+
+# Hurdle model - group size, group structure, collapsed hierarchy 
+library(dplyr)
+library(ape)
+library(brms)
+
+data$hierarchical_collapsed <- as.character(data$hierarchical_structure)
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Matriarchal","Patriarchal")] <- "High"
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Egalitarian","Dominant pair")] <- "Low"
+data$hierarchical_collapsed <- factor(data$hierarchical_collapsed, levels = c("Low","High"))
+
+d0_soc <- data.frame(
+  nexus_name            = data$nexus_name,
+  ssb_prevalence        = data$ssb_prevalence,
+  median_group_size     = as.numeric(as.character(data$median_group_size)),
+  group_structure       = factor(data$group_structure),
+  hierarchical_collapsed= factor(data$hierarchical_collapsed, levels = c("Low","High"))
+)
+
+d1_soc <- d0_soc |>
+  filter(if_all(everything(), ~ !is.na(.)))
+
+tree_soc <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_soc$nexus_name))
+d1_soc   <- d1_soc |> filter(nexus_name %in% tree_soc$tip.label)
+
+A_soc <- vcv(tree_soc, corr = TRUE)
+A_soc <- A_soc[tree_soc$tip.label, tree_soc$tip.label]
+
+d1_soc$nexus_name <- factor(d1_soc$nexus_name, levels = rownames(A_soc))
+
+d1_soc$group_size_scaled <- scale(d1_soc$median_group_size)
+
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_social_mt <- brm(
+  bf(
+    ssb_prevalence ~ group_size_scaled + group_structure + hierarchical_collapsed +
+      (1 | gr(nexus_name, cov = A_soc)),
+    hu ~ group_size_scaled + group_structure + hierarchical_collapsed
+  ),
+  data   = d1_soc,
+  family = fam,
+  data2  = list(A_soc = A_soc),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_social_mt)
+
+fixef(brms_hurdle_social_mt, parm = "^b_")      
+fixef(brms_hurdle_social_mt, parm = "^b_hu_")   
+pp_check(brms_hurdle_social_mt)
+loo(brms_hurdle_social_mt)
+
+
+
+
+## Hurdle model filtered for ethogram completeness
+# Hurdle model - group size, group structure, collapsed hierarchy (ethogram-qualified)
+library(dplyr)
+library(ape)
+library(brms)
+
+# Collapse hierarchy
+data$hierarchical_collapsed <- as.character(data$hierarchical_structure)
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Matriarchal","Patriarchal")] <- "High"
+data$hierarchical_collapsed[data$hierarchical_collapsed %in% c("Egalitarian","Dominant pair")] <- "Low"
+data$hierarchical_collapsed <- factor(data$hierarchical_collapsed, levels = c("Low","High"))
+
+d0_soc <- data.frame(
+  nexus_name             = data$nexus_name,
+  ssb_prevalence         = data$ssb_prevalence,
+  ssb_ethogram           = data$ssb_ethogram,              # NEW
+  median_group_size      = as.numeric(as.character(data$median_group_size)),
+  group_structure        = factor(data$group_structure),
+  hierarchical_collapsed = factor(data$hierarchical_collapsed, levels = c("Low","High"))
+)
+
+# Ethogram-qualified response:
+# - ethogram==1 keeps observed prevalence
+# - otherwise set to 0 (keep zeros for the hurdle)
+d1_soc <- d0_soc |>
+  mutate(
+    ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
+    ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
+  ) |>
+  # OPTIONAL: if an ethogram==1 species has missing/non-positive prevalence, drop it
+  # filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0))) |>
+  # Keep rows only if predictors are present
+  filter(!is.na(nexus_name)) |>
+  filter(if_all(c("median_group_size","group_structure","hierarchical_collapsed"), ~ !is.na(.)))
+
+# Phylogeny + covariance
+tree_soc <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_soc$nexus_name))
+d1_soc   <- d1_soc |> filter(nexus_name %in% tree_soc$tip.label)
+
+A_soc <- vcv(tree_soc, corr = TRUE)
+A_soc <- A_soc[tree_soc$tip.label, tree_soc$tip.label]
+
+# Clean factor levels post-pruning
+d1_soc$nexus_name <- factor(d1_soc$nexus_name, levels = rownames(A_soc))
+d1_soc$group_structure <- droplevels(d1_soc$group_structure)
+d1_soc$hierarchical_collapsed <- droplevels(d1_soc$hierarchical_collapsed)
+
+# Scale group size
+d1_soc$group_size_scaled <- scale(d1_soc$median_group_size)
+
+# Family + priors (kept as in your original)
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_social_mt <- brm(
+  bf(
+    ssb_prevalence ~ group_size_scaled + group_structure + hierarchical_collapsed +
+      (1 | gr(nexus_name, cov = A_soc)),
+    hu ~ group_size_scaled + group_structure + hierarchical_collapsed
+  ),
+  data   = d1_soc,
+  family = fam,
+  data2  = list(A_soc = A_soc),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_social_mt)
+fixef(brms_hurdle_social_mt, parm = "^b_")       # positive part
+fixef(brms_hurdle_social_mt, parm = "^b_hu_")    # hurdle part
+pp_check(brms_hurdle_social_mt)
+loo(brms_hurdle_social_mt)
+
+
+
+
+
+#####Save imputed data#####
+env_df <- as.data.frame(env_traits_full)
+lifehist_df <- as.data.frame(lifehist_traits_full)
+social_df <- as.data.frame(social_traits_full)
+
+env_df$species <- rownames(env_df)
+lifehist_df$species <- rownames(lifehist_df)
+social_df$species <- rownames(social_df)
+
+library(dplyr)
+imputed_all_numeric <- env_df %>%
+  full_join(lifehist_df, by = "species") %>%
+  full_join(social_df, by = "species")
+
+write.csv(imputed_all_numeric, "imputed_numeric_traits_full_dataset.csv", row.names = FALSE)
+
+
+
+##### FULL SSB OCCURENCE MODEL WITH ALL PREDICTORS ##### - not used in main text due to inflated SE
+shared_species <- Reduce(intersect, list(
+  rownames(env_traits_full),
+  rownames(lifehist_traits_full),
+  rownames(social_traits_full),
+  data$nexus_name
+))
+
+env_sub <- env_traits_full[shared_species, ]
+lifehist_sub <- lifehist_traits_full[shared_species, ]
+social_sub <- social_traits_full[shared_species, ]
+
+env_scaled <- scale(env_sub)
+lifehist_scaled <- scale(lifehist_sub)
+social_scaled <- scale(social_traits_full[shared_species, , drop = FALSE])
+colnames(social_scaled) <- "median_group_size"
+
+meta_vars <- data %>%
+  filter(nexus_name %in% shared_species) %>%
+  select(nexus_name, ssb_presence, group_structure, hierarchical_structure, mating_system, infant_rearing_strategy) %>%
+  mutate(across(c(group_structure, hierarchical_structure, mating_system, infant_rearing_strategy), factor))
+
+rownames(meta_vars) <- meta_vars$nexus_name
+meta_vars <- meta_vars[, -which(colnames(meta_vars) == "nexus_name")]
+
+combined_df <- data.frame(
+  ssb_presence = as.numeric(meta_vars$ssb_presence),
+  env_scaled,
+  lifehist_scaled,
+  group_structure = meta_vars$group_structure,
+  hierarchical_structure = meta_vars$hierarchical_structure,
+  mating_system = meta_vars$mating_system,
+  infant_rearing_strategy = meta_vars$infant_rearing_strategy,
+  group_size = as.numeric(social_scaled[, "median_group_size"])
+)
+
+combined_species <- rownames(combined_df)
+combined_tree <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, combined_species))
+
+model_combined <- phyloglm(
+  ssb_presence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+    predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+    adult_sex_ratio + group_size + group_structure + hierarchical_structure +
+    mating_system + infant_rearing_strategy,
+  data = combined_df,
+  phy = combined_tree,
+  method = "logistic_MPLE",
+  btol = 41
+)
+
+summary(model_combined)
+
+
+#Multicollinearity using VIF
+library(car)
+
+glm_model <- glm(
+  ssb_presence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+    predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+    adult_sex_ratio + group_size + group_structure + hierarchical_structure +
+    mating_system + infant_rearing_strategy,
+  data = combined_df,
+  family = binomial
+)
+
+vif(glm_model)
+
+
+
+# Full hurdle model
+library(dplyr)
+library(ape)
+library(brms)
+
+if (is.null(rownames(data)) || !all(rownames(combined_df) %in% rownames(data))) {
+  stopifnot("nexus_name" %in% names(data))
+  rownames(data) <- data$nexus_name
+}
+combined_df$ssb_prevalence <- as.numeric(data[rownames(combined_df), "ssb_prevalence"])
+
+vars_h <- c(
+  "ssb_prevalence",
+  "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
+  "predator_count","sexual_dimorphism","median_body_mass","bodymass_range","lifespan",
+  "adult_sex_ratio","group_size",
+  "group_structure","hierarchical_structure","mating_system","infant_rearing_strategy"
+)
+
+dat_h <- combined_df[, vars_h, drop = FALSE] %>%
+  filter(complete.cases(.))
+
+dat_h$group_structure         <- factor(dat_h$group_structure)
+dat_h$hierarchical_structure  <- factor(dat_h$hierarchical_structure)
+dat_h$mating_system           <- factor(dat_h$mating_system)
+dat_h$infant_rearing_strategy <- factor(dat_h$infant_rearing_strategy)
+
+sp_h   <- rownames(dat_h)
+tree_h <- drop.tip(combined_tree, setdiff(combined_tree$tip.label, sp_h))
+stopifnot(all(sp_h %in% tree_h$tip.label))
+
+A <- vcv(tree_h, corr = TRUE)
+A <- A[tree_h$tip.label, tree_h$tip.label]
+
+dat_h$nexus_name <- factor(rownames(dat_h), levels = rownames(A))
+
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_overall <- brm(
+  bf(
+    ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure + hierarchical_structure + mating_system + infant_rearing_strategy +
+      (1 | gr(nexus_name, cov = A)),
+    hu ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure + hierarchical_structure + mating_system + infant_rearing_strategy
+  ),
+  data   = dat_h,
+  family = hurdle_lognormal(),
+  data2  = list(A = A),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_overall)
+
+fixef(brms_hurdle_overall, parm = "^b_")     
+fixef(brms_hurdle_overall, parm = "^b_hu_")   
+pp_check(brms_hurdle_overall)
+loo(brms_hurdle_overall)
+
+
+
+
+## Hurdle model filtered for ethogram completeness
+library(dplyr)
+library(ape)
+library(brms)
+
+# Ensure rownames for lookup from `data`
+if (is.null(rownames(data)) || !all(rownames(combined_df) %in% rownames(data))) {
+  stopifnot("nexus_name" %in% names(data))
+  rownames(data) <- data$nexus_name
+}
+
+# Pull response + ethogram from `data` using species rownames in combined_df
+combined_df$ssb_prevalence <- as.numeric(data[rownames(combined_df), "ssb_prevalence"])
+combined_df$ssb_ethogram   <- as.numeric(data[rownames(combined_df), "ssb_ethogram"])
+
+# Variable set (add ssb_ethogram)
+vars_h <- c(
+  "ssb_prevalence", "ssb_ethogram",
+  "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
+  "predator_count","sexual_dimorphism","median_body_mass","bodymass_range","lifespan",
+  "adult_sex_ratio","group_size",
+  "group_structure","hierarchical_structure","mating_system","infant_rearing_strategy"
+)
+
+# Start from combined_df, keep only needed columns
+dat_h0 <- combined_df[, vars_h, drop = FALSE]
+
+# Ethogram-qualified response:
+# - ethogram==1 keeps observed prevalence
+# - otherwise set to 0 (retain zeros for hurdle)
+dat_h0 <- dat_h0 |>
+  mutate(
+    ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
+    ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
+  )
+# OPTIONAL: if an ethogram==1 species has missing/non-positive prevalence, drop it:
+# dat_h0 <- dat_h0 |> filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0)))
+
+# Coerce/cast some predictors safely (in case of character)
+dat_h0$group_size         <- as.numeric(as.character(dat_h0$group_size))
+dat_h0$group_structure    <- factor(dat_h0$group_structure)
+dat_h0$hierarchical_structure  <- factor(dat_h0$hierarchical_structure)
+dat_h0$mating_system           <- factor(dat_h0$mating_system)
+dat_h0$infant_rearing_strategy <- factor(dat_h0$infant_rearing_strategy)
+
+# Drop rows with missing PREDICTORS (do not filter on ssb_prevalence)
+pred_cols <- c(
+  "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
+  "predator_count","sexual_dimorphism","median_body_mass","bodymass_range","lifespan",
+  "adult_sex_ratio","group_size",
+  "group_structure","hierarchical_structure","mating_system","infant_rearing_strategy"
+)
+dat_h <- dat_h0 |>
+  filter(if_all(all_of(pred_cols), ~ !is.na(.)))
+
+# Phylogeny
+sp_h   <- rownames(dat_h)
+tree_h <- drop.tip(combined_tree, setdiff(combined_tree$tip.label, sp_h))
+stopifnot(all(sp_h %in% tree_h$tip.label))
+
+# Phylo covariance
+A <- vcv(tree_h, corr = TRUE)
+A <- A[tree_h$tip.label, tree_h$tip.label]
+
+# Index for RE + drop unused factor levels post-pruning
+dat_h$nexus_name <- factor(rownames(dat_h), levels = rownames(A))
+dat_h$group_structure         <- droplevels(dat_h$group_structure)
+dat_h$hierarchical_structure  <- droplevels(dat_h$hierarchical_structure)
+dat_h$mating_system           <- droplevels(dat_h$mating_system)
+dat_h$infant_rearing_strategy <- droplevels(dat_h$infant_rearing_strategy)
+
+# Priors & family (unchanged from your original)
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_overall <- brm(
+  bf(
+    ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure + hierarchical_structure + mating_system + infant_rearing_strategy +
+      (1 | gr(nexus_name, cov = A)),
+    hu ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure + hierarchical_structure + mating_system + infant_rearing_strategy
+  ),
+  data   = dat_h,
+  family = hurdle_lognormal(),
+  data2  = list(A = A),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_overall)
+fixef(brms_hurdle_overall, parm = "^b_")      # positive part
+fixef(brms_hurdle_overall, parm = "^b_hu_")   # hurdle part
+pp_check(brms_hurdle_overall)
+loo(brms_hurdle_overall)
+
+
+
+
+
+
+#Collapsed overall SSB occurrence model - used in main text
+combined_df <- data.frame(
+  ssb_presence = as.numeric(meta_vars$ssb_presence),
+  env_scaled,
+  lifehist_scaled,
+  group_structure = meta_vars$group_structure,
+  hierarchical_structure = meta_vars$hierarchical_structure,
+  mating_system = meta_vars$mating_system,
+  infant_rearing_strategy = meta_vars$infant_rearing_strategy,
+  group_size = as.numeric(social_scaled[, "median_group_size"])
+)
+
+combined_df$group_structure_collapsed <- ifelse(
+  combined_df$group_structure %in% c("Multi-male-multi-female", "Single-male-multi-female", "Fission-fusion"),
+  "complex", "mono/solitary"
+)
+
+combined_df$hierarchy_collapsed <- ifelse(
+  combined_df$hierarchical_structure %in% c("Patriarchal", "Matriarchal"),
+  "high", "low"
+)
+
+combined_df$mating_system_collapsed <- ifelse(
+  combined_df$mating_system == "Monogamous",
+  "monogamous", "non-monogamous"
+)
+
+combined_df$infant_rearing_collapsed <- ifelse(
+  combined_df$infant_rearing_strategy == "All-parental", "all-parental",
+  ifelse(combined_df$infant_rearing_strategy == "Maternal", "maternal", "other-parent")
+)
+
+combined_df$group_structure_collapsed <- factor(combined_df$group_structure_collapsed, levels = c("mono/solitary", "complex"))
+combined_df$hierarchy_collapsed <- factor(combined_df$hierarchy_collapsed, levels = c("low", "high"))
+combined_df$mating_system_collapsed <- factor(combined_df$mating_system_collapsed, levels = c("monogamous", "non-monogamous"))
+combined_df$infant_rearing_collapsed <- factor(combined_df$infant_rearing_collapsed, levels = c("maternal", "all-parental", "other-parent"))
+
+vars_to_keep <- c(
+  "ssb_presence",
+  "mean_temp_2019", "mean_precip_2019", "mean_cloud_2019", "mean_biomass_2019",
+  "predator_count", "sexual_dimorphism", "median_body_mass", "bodymass_range", "lifespan",
+  "adult_sex_ratio", "group_size",
+  "group_structure_collapsed", "hierarchy_collapsed", "mating_system_collapsed", "infant_rearing_collapsed"
+)
+
+clean_df <- combined_df[, vars_to_keep] %>%
+  filter(complete.cases(.))
+
+clean_df$group_structure_collapsed <- droplevels(clean_df$group_structure_collapsed)
+clean_df$hierarchy_collapsed <- droplevels(clean_df$hierarchy_collapsed)
+clean_df$mating_system_collapsed <- droplevels(clean_df$mating_system_collapsed)
+clean_df$infant_rearing_collapsed <- droplevels(clean_df$infant_rearing_collapsed)
+
+species_final <- rownames(clean_df)
+tree_final <- drop.tip(combined_tree, setdiff(combined_tree$tip.label, species_final))
+
+stopifnot(all(rownames(clean_df) %in% tree_final$tip.label))
+
+model_collapsed <- phyloglm(
+  ssb_presence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+    predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+    adult_sex_ratio + group_size +
+    group_structure_collapsed + hierarchy_collapsed + mating_system_collapsed + infant_rearing_collapsed,
+  data = clean_df,
+  phy = tree_final,
+  method = "logistic_MPLE",
+  btol = 29
+)
+
+summary(model_collapsed)
+
+
+#VIF check for multicollinearity
+glm_collapsed <- glm(
+  ssb_presence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+    predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+    adult_sex_ratio + group_size +
+    group_structure_collapsed + hierarchy_collapsed + mating_system_collapsed + infant_rearing_collapsed,
+  data = clean_df,
+  family = binomial
+)
+
+vif(glm_collapsed)
+
+
+
+## Collapsed overall hurdle model
+library(dplyr)
+library(ape)
+library(brms)
+
+combined_df <- data.frame(
+  ssb_presence = as.numeric(meta_vars$ssb_presence),
+  env_scaled,
+  lifehist_scaled,
+  group_structure         = meta_vars$group_structure,
+  hierarchical_structure  = meta_vars$hierarchical_structure,
+  mating_system           = meta_vars$mating_system,
+  infant_rearing_strategy = meta_vars$infant_rearing_strategy,
+  group_size              = as.numeric(social_scaled[, "median_group_size"]),
+  row.names = rownames(meta_vars)
+)
+
+combined_df$group_structure_collapsed <- ifelse(
+  combined_df$group_structure %in% c("Multi-male-multi-female","Single-male-multi-female","Fission-fusion"),
+  "complex","mono/solitary"
+)
+combined_df$hierarchy_collapsed <- ifelse(
+  combined_df$hierarchical_structure %in% c("Patriarchal","Matriarchal"),
+  "high","low"
+)
+combined_df$mating_system_collapsed <- ifelse(
+  combined_df$mating_system == "Monogamous","monogamous","non-monogamous"
+)
+combined_df$infant_rearing_collapsed <- ifelse(
+  combined_df$infant_rearing_strategy == "All-parental","all-parental",
+  ifelse(combined_df$infant_rearing_strategy == "Maternal","maternal","other-parent")
+)
+
+combined_df$group_structure_collapsed <- factor(combined_df$group_structure_collapsed,
+                                                levels = c("mono/solitary","complex"))
+combined_df$hierarchy_collapsed       <- factor(combined_df$hierarchy_collapsed,
+                                                levels = c("low","high"))
+combined_df$mating_system_collapsed   <- factor(combined_df$mating_system_collapsed,
+                                                levels = c("monogamous","non-monogamous"))
+combined_df$infant_rearing_collapsed  <- factor(combined_df$infant_rearing_collapsed,
+                                                levels = c("maternal","all-parental","other-parent"))
+
+combined_df$ssb_prevalence <- as.numeric(data[rownames(combined_df), "ssb_prevalence"])
+
+vars_to_keep_h <- c(
+  "ssb_prevalence",
+  "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
+  "predator_count","sexual_dimorphism","median_body_mass","bodymass_range","lifespan",
+  "adult_sex_ratio","group_size",
+  "group_structure_collapsed","hierarchy_collapsed","mating_system_collapsed","infant_rearing_collapsed"
+)
+
+clean_df_h <- combined_df[, vars_to_keep_h] %>% filter(complete.cases(.))
+
+clean_df_h$group_structure_collapsed <- droplevels(clean_df_h$group_structure_collapsed)
+clean_df_h$hierarchy_collapsed       <- droplevels(clean_df_h$hierarchy_collapsed)
+clean_df_h$mating_system_collapsed   <- droplevels(clean_df_h$mating_system_collapsed)
+clean_df_h$infant_rearing_collapsed  <- droplevels(clean_df_h$infant_rearing_collapsed)
+
+species_h <- rownames(clean_df_h)
+tree_h    <- drop.tip(combined_tree, setdiff(combined_tree$tip.label, species_h))
+stopifnot(all(species_h %in% tree_h$tip.label))
+
+A <- vcv(tree_h, corr = TRUE)
+A <- A[tree_h$tip.label, tree_h$tip.label]
+
+clean_df_h$nexus_name <- factor(rownames(clean_df_h), levels = rownames(A))
+
+fam <- hurdle_lognormal()
+pri <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(0,1), class = "b", dpar = "hu"),
+  prior(student_t(3,0,2.5), class = "Intercept"),
+  prior(student_t(3,0,2.5), class = "Intercept", dpar = "hu"),
+  prior(exponential(1), class = "sd"),
+  prior(exponential(1), class = "sigma")
+)
+
+brms_hurdle_combined <- brm(
+  bf(
+    ssb_prevalence ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure_collapsed + hierarchy_collapsed +
+      mating_system_collapsed + infant_rearing_collapsed +
+      (1 | gr(nexus_name, cov = A)),
+    hu ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 +
+      predator_count + sexual_dimorphism + median_body_mass + bodymass_range + lifespan +
+      adult_sex_ratio + group_size +
+      group_structure_collapsed + hierarchy_collapsed +
+      mating_system_collapsed + infant_rearing_collapsed
+  ),
+  data   = clean_df_h,
+  family = fam,
+  data2  = list(A = A),
+  prior  = pri,
+  chains = 4, cores = 4, iter = 4000,
+  control = list(adapt_delta = 0.99, max_treedepth = 15),
+  seed   = 123
+)
+
+summary(brms_hurdle_combined)
+
+fixef(brms_hurdle_combined, parm = "^b_")      
+fixef(brms_hurdle_combined, parm = "^b_hu_")   
+pp_check(brms_hurdle_combined)
+loo(brms_hurdle_combined)
+
+
+
+
+
+##### FULL SSB PREVALENCE MODEL WITH ALL PREDICTORS - model failed due to small sample size and limited variance in predictors #####
+# --- 1) Species intersection ---
+intersected_species <- Reduce(intersect, list(
+  rownames(env_traits_subset),
+  rownames(lifehist_traits_subset),
+  rownames(social_traits_subset),
+  ssbdata$nexus_name,
+  pruned_ssb_tree$tip.label
+))
+cat("N species:", length(intersected_species), "\n")
+# head(intersected_species)
+
+env_final      <- env_traits_subset[intersected_species, , drop = FALSE]
+lifehist_final <- lifehist_traits_subset[intersected_species, , drop = FALSE]
+social_final   <- social_traits_subset[intersected_species, , drop = FALSE]
+
+# --- 2) Meta variables (set rownames safely; don't use column_to_rownames on df w/ rownames) ---
+meta_vars <- ssbdata %>%
+  filter(nexus_name %in% intersected_species) %>%
+  select(nexus_name, group_structure, hierarchical_structure, mating_system, infant_rearing_strategy) %>%
+  as.data.frame()
+stopifnot(!anyDuplicated(meta_vars$nexus_name))
+rownames(meta_vars) <- meta_vars$nexus_name
+meta_vars$nexus_name <- NULL
+
+# Handle both hyphen and en-dash variants
+complex_levels <- c("Multi-male-multi-female","Single-male-multi-female","Fission-fusion",
+                    "Multi-male–multi-female","Single-male–multi-female","Fission–fusion")
+
+meta_vars$group_structure_collapsed <- ifelse(
+  meta_vars$group_structure %in% complex_levels, "complex", "mono/solitary"
+)
+meta_vars$hierarchy_collapsed <- ifelse(
+  meta_vars$hierarchical_structure %in% c("Patriarchal","Matriarchal"), "high", "low"
+)
+meta_vars$mating_system_collapsed <- ifelse(
+  meta_vars$mating_system == "Monogamous", "monogamous", "non-monogamous"
+)
+meta_vars$infant_rearing_collapsed <- ifelse(
+  meta_vars$infant_rearing_strategy == "All-parental", "all-parental",
+  ifelse(meta_vars$infant_rearing_strategy == "Maternal", "maternal", "other-parent")
+)
+
+meta_vars$group_structure_collapsed <- factor(meta_vars$group_structure_collapsed,
+                                              levels = c("mono/solitary","complex"))
+meta_vars$hierarchy_collapsed <- factor(meta_vars$hierarchy_collapsed,
+                                        levels = c("low","high"))
+meta_vars$mating_system_collapsed <- factor(meta_vars$mating_system_collapsed,
+                                            levels = c("monogamous","non-monogamous"))
+meta_vars$infant_rearing_collapsed <- factor(meta_vars$infant_rearing_collapsed,
+                                             levels = c("maternal","all-parental","other-parent"))
+
+# --- 3) Build combined prevalence dataframe (FIX: species_from_data -> intersected_species) ---
+combined_df_prevalence <- data.frame(
+  ssb_prevalence = ssbdata[intersected_species, "ssb_prevalence"],
+  env_final,
+  lifehist_final,
+  group_size = as.data.frame(social_final)[intersected_species, "median_group_size"],
+  meta_vars[intersected_species, , drop = FALSE],
+  row.names = intersected_species
+)
+combined_df_prevalence <- combined_df_prevalence[!is.na(combined_df_prevalence$ssb_prevalence), , drop = FALSE]
+
+# --- 4) Prune & align tree ---
+final_tree_prevalence <- drop.tip(
+  pruned_ssb_tree,
+  setdiff(pruned_ssb_tree$tip.label, rownames(combined_df_prevalence))
+)
+combined_df_prevalence <- combined_df_prevalence[final_tree_prevalence$tip.label, , drop = FALSE]
+stopifnot(identical(rownames(combined_df_prevalence), final_tree_prevalence$tip.label))
+
+# Drop unused factor levels post-filter
+fac_cols <- c("group_structure_collapsed","hierarchy_collapsed",
+              "mating_system_collapsed","infant_rearing_collapsed")
+for (cc in fac_cols) {
+  combined_df_prevalence[[cc]] <- droplevels(combined_df_prevalence[[cc]])
+}
+
+# Auto-drop any factor that collapsed to a single level
+keep_fac <- fac_cols[sapply(combined_df_prevalence[fac_cols], function(x) is.factor(x) && nlevels(x) > 1)]
+
+# --- 5) Fit model (Gaussian phylolm with λ) ---
+rhs_terms <- c("mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
+               "predator_count","sexual_dimorphism","median_body_mass","bodymass_range",
+               "lifespan","adult_sex_ratio","group_size", keep_fac)
+form_full_prev <- as.formula(paste("ssb_prevalence ~", paste(rhs_terms, collapse = " + ")))
+cat("Fitting terms:", paste(rhs_terms, collapse = " + "), "\n")
+
+model_prevalence_full <- phylolm(
+  form_full_prev,
+  data = combined_df_prevalence,
+  phy  = final_tree_prevalence,
+  model = "lambda"
+)
+summary(model_prevalence_full)
+
+
+
+##### STRUCTURAL EQUATION MODELLING #####
+
+#SEM - Data cleaning
+species_all <- Reduce(intersect, list(
+  rownames(env_traits_full),
+  rownames(lifehist_traits_full),
+  rownames(social_model_data_full_complete)
+))
+
+env_all      <- env_traits_full[species_all, ]
+lifehist_all <- lifehist_traits_full[species_all, ]
+social_all   <- social_model_data_full_complete[species_all, ]
+
+ssb_vector <- data$ssb_presence[match(species_all, data$nexus_name)]
+
+sem_data <- data.frame(
+  SSB = ssb_vector,
+  env_all,
+  lifehist_all,
+  group_size = social_all$group_size_scaled,
+  group_structure = droplevels(factor(social_all$group_structure)),
+  hierarchical_structure = droplevels(factor(social_all$hierarchical_structure)),
+  mating_system = droplevels(factor(social_all$mating_system)),
+  infant_rearing_strategy = droplevels(factor(social_all$infant_rearing_strategy)),
+  species = species_all
+)
+
+sem_data <- sem_data[complete.cases(sem_data), ]
+sem_data <- sem_data[sem_data$mating_system != "", ]
+sem_data$mating_system <- droplevels(sem_data$mating_system)
+
+sem_data$SSB <- as.numeric(sem_data$SSB)
+sem_data <- as.data.frame(lapply(sem_data, function(x) {
+  if (is.numeric(x)) unname(as.numeric(x)) else x
+}))
+
+rownames(sem_data) <- sem_data$species
+sem_data$species <- NULL
+
+sem_tree <- ape::drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, rownames(sem_data)))
+sem_data <- sem_data[rownames(sem_data) %in% sem_tree$tip.label, ]
+sem_tree <- ape::drop.tip(sem_tree, setdiff(sem_tree$tip.label, rownames(sem_data)))
+
+sem_data[] <- lapply(sem_data, function(x) {
+  if (is.logical(x)) as.numeric(x) else x
+})
+
+
+#Check for multicollinearity
+library(car)
+
+vif_model <- lm(
+  SSB ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count +
+    lifespan + sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+    group_size + group_structure + hierarchical_structure + mating_system + infant_rearing_strategy,
+  data = sem_data
+)
+
+vif_scores <- vif(vif_model)
+
+print(vif_scores)
+
+
+#EFA
+install.packages("psych")
+install.packages("GPArotation")
+
+library(psych)      
+library(GPArotation)
+
+efa_predictors <- sem_data[, sapply(sem_data, is.numeric)]
+efa_predictors <- efa_predictors[, colnames(efa_predictors) != "SSB"] 
+
+fa.parallel(efa_predictors, fa = "fa")
+
+efa_result <- fa(efa_predictors, nfactors = 3, rotate = "oblimin", fm = "ml")
+print(efa_result, cut = 0.3) 
+
+
+#Check categorical
+table(sem_data$group_structure)
+table(sem_data$hierarchical_structure)
+table(sem_data$mating_system)
+table(sem_data$infant_rearing_strategy)
+
+install.packages("rcompanion")  
+library(rcompanion)
+
+group_structure <- as.factor(sem_data$group_structure)
+hierarchical_structure <- as.factor(sem_data$hierarchical_structure)
+mating_system <- as.factor(sem_data$mating_system)
+infant_rearing <- as.factor(sem_data$infant_rearing_strategy)
+
+cramer_gs_hs <- cramerV(group_structure, hierarchical_structure)
+cramer_gs_ms <- cramerV(group_structure, mating_system)
+cramer_gs_ir <- cramerV(group_structure, infant_rearing)
+
+cramer_hs_ms <- cramerV(hierarchical_structure, mating_system)
+cramer_hs_ir <- cramerV(hierarchical_structure, infant_rearing)
+
+cramer_ms_ir <- cramerV(mating_system, infant_rearing)
+
+cat("Cramér's V between group_structure and hierarchical_structure:", cramer_gs_hs, "\n")
+cat("Cramér's V between group_structure and mating_system:", cramer_gs_ms, "\n")
+cat("Cramér's V between group_structure and infant_rearing_strategy:", cramer_gs_ir, "\n")
+cat("Cramér's V between hierarchical_structure and mating_system:", cramer_hs_ms, "\n")
+cat("Cramér's V between hierarchical_structure and infant_rearing_strategy:", cramer_hs_ir, "\n")
+cat("Cramér's V between mating_system and infant_rearing_strategy:", cramer_ms_ir, "\n")
+
+
+#Filtered and layered SEM (removing temp, biomass, lifespan, mating system)
+library(brms)
+
+rt <- "A:/Downloads/rtools44"
+Sys.setenv(PATH = paste(
+  file.path(rt, "usr/bin"),
+  file.path(rt, "ucrt64/bin"),
+  Sys.getenv("PATH"),
+  sep = ";"
+))
+Sys.which("make")  # should show A:/Downloads/rtools44/usr/bin/make.exe
+Sys.which("g++")   # should show A:/Downloads/rtools44/ucrt64/bin/g++.exe
+
+
+group_vals <- social_model_data_full_complete[rownames(sem_data), "group_structure"]
+group_clean <- as.character(group_vals)
+group_clean[group_clean == "Fission-fusion"] <- "Multi-male-multi-female"
+group_factor <- factor(group_clean,
+                       levels = c("Solitary", "Monogamous pairs", "Single-male-multi-female", "Multi-male-multi-female"),
+                       ordered = TRUE
+)
+sem_data$group_structure <- as.numeric(group_factor)
+
+sem_data$hierarchical_structure <- factor(
+  as.character(sem_data$hierarchical_structure),
+  levels = c("Egalitarian", "Dominant pair", "Matriarchal", "Patriarchal"),
+  ordered = TRUE
+)
+sem_data$hierarchical_structure <- as.numeric(sem_data$hierarchical_structure)
+
+sem_data$infant_rearing_strategy <- factor(
+  as.character(sem_data$infant_rearing_strategy),
+  levels = c("Allo-parenting", "Shared parental care", "Paternal", "Maternal"),
+  ordered = TRUE
+)
+sem_data$infant_rearing_strategy <- as.numeric(sem_data$infant_rearing_strategy)
+
+sem_data <- sem_data[complete.cases(sem_data), ]
+
+brms_layered_binary_ssb <- 
+  bf(SSB ~ group_size + group_structure + hierarchical_structure +
+       infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass +
+       bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) +  # Binary outcome
+  
+  bf(group_size ~ sexual_dimorphism + median_body_mass +
+       bodymass_range + adult_sex_ratio) +
+  bf(group_structure ~ sexual_dimorphism + median_body_mass +
+       bodymass_range + adult_sex_ratio) +
+  bf(hierarchical_structure ~ sexual_dimorphism + median_body_mass +
+       bodymass_range + adult_sex_ratio) +
+  bf(infant_rearing_strategy ~ sexual_dimorphism + median_body_mass +
+       bodymass_range + adult_sex_ratio) +
+  
+  bf(sexual_dimorphism ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(median_body_mass ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(bodymass_range ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(adult_sex_ratio ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  
+  set_rescor(FALSE)
+
+
+fit_binary <- brm(brms_layered_binary_ssb, data = sem_data,
+                  chains = 4, iter = 4000, cores = 4, seed = 123)
+
+
+summary(fit_binary)
+
+capture.output(
+  summary(fit_binary),
+  file = "sem_env_life_social_summary.txt"
+)
+
+saveRDS(fit_binary, file = "sem_env_life_social_fit.rds")
+
+install.packages("openxlsx")  
+library(openxlsx)
+
+sem_summary <- as.data.frame(summary(fit_binary)$fixed)
+sem_summary$term <- rownames(sem_summary)
+sem_summary <- sem_summary %>%
+  mutate(
+    Response = sub("^(.*?)_.*", "\\1", term),
+    Predictor = sub("^.*?_(.*)", "\\1", term)
+  ) %>%
+  select(Response, Predictor,
+         Estimate = Estimate,
+         SE = Est.Error,
+         `2.5% CI` = `l-95% CI`,
+         `97.5% CI` = `u-95% CI`,
+         `Bulk ESS` = Bulk_ESS,
+         `Tail ESS` = Tail_ESS)
+write.xlsx(sem_summary, "supplementary_SEM_results_10sept.xlsx", rowNames = FALSE)
+
+
+#Model fit check
+install.packages("loo")
+library(loo)
+
+loo_fit <- loo(fit_binary)
+print(loo_fit)
+
+pareto_k <- pareto_k_ids(loo_fit)
+plot(loo_fit)
+
+which(pareto_k > 0.7)   
+rownames(sem_data)[pareto_k > 0.7]  
+
+bad_idx <- which(loo_fit$diagnostics$pareto_k > 1)  
+
+bad_species <- rownames(sem_data)[bad_idx]
+bad_species
+
+sem_data_reduced <- sem_data[-bad_idx, , drop = FALSE]
+fit_binary_reduced <- update(fit_binary, newdata = sem_data_reduced, recompile = FALSE)
+
+summary(fit_binary_reduced)
+
+loo_reduced <- loo(fit_binary_reduced)
+
+
+bayes_R2(fit_binary, resp = "SSB")
+
+pp_check(fit_binary, resp = "SSB", type = "dens_overlay")
+
+
+
+## Checking alternative SEM iterations
+
+# Environment, social, life history, SSB
+brms_layered_binary_ssb_env_social_life <- 
+  bf(SSB ~ 
+       group_size + group_structure + hierarchical_structure + infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) +  
+  
+  bf(group_size ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(group_structure ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(hierarchical_structure ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(infant_rearing_strategy ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  
+  bf(sexual_dimorphism ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(median_body_mass ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(bodymass_range ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(adult_sex_ratio ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  
+  set_rescor(FALSE)
+
+fit_binary_env_social_life <- brm(
+  brms_layered_binary_ssb_env_social_life,
+  data  = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123
+)
+
+summary(fit_binary_env_social_life)
+
+loo_fit_env_social_life <- loo(fit_binary_env_social_life)
+print(loo_fit_env_social_life)
+
+capture.output(
+  summary(fit_binary_env_social_life),
+  file = "sem_env_social_life_summary.txt"
+)
+
+saveRDS(fit_binary_env_social_life, file = "sem_env_social_life_fit.rds")
+
+
+
+# Life history, environment, social, SSB
+brms_layered_binary_ssb_life_env_social <- 
+  bf(SSB ~ 
+       group_size + group_structure + hierarchical_structure + infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) +  
+  
+  bf(mean_precip_2019 ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(mean_cloud_2019   ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(predator_count    ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  
+  bf(group_size ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(group_structure ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(hierarchical_structure ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(infant_rearing_strategy ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  
+  set_rescor(FALSE)
+
+fit_binary_life_env_social <- brm(
+  brms_layered_binary_ssb_life_env_social,
+  data = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123,
+  control = list(adapt_delta = 0.995, max_treedepth = 15)
+)
+
+summary(fit_binary_life_env_social)
+
+loo_fit_life_env_social <- loo(fit_binary_life_env_social)
+print(loo_fit_life_env_social)
+
+capture.output(
+  summary(fit_binary_life_env_social),
+  file = "sem_life_env_social_summary.txt"
+)
+
+saveRDS(fit_binary_life_env_social, file = "sem_life_env_social_fit.rds")
+
+
+
+# Life history, social, environment, SSB
+brms_layered_binary_ssb_life_social_env <- 
+  bf(SSB ~ 
+       group_size + group_structure + hierarchical_structure + infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) +  
+  
+  bf(group_size ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(group_structure ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(hierarchical_structure ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(infant_rearing_strategy ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  
+  bf(mean_precip_2019 ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(mean_cloud_2019   ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(predator_count    ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  
+  set_rescor(FALSE)
+
+fit_binary_life_social_env <- brm(
+  brms_layered_binary_ssb_life_social_env,
+  data = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123,
+  control = list(adapt_delta = 0.995, max_treedepth = 15)
+)
+
+summary(fit_binary_life_social_env)
+
+loo_fit_life_social_env <- loo(fit_binary_life_social_env)
+print(loo_fit_life_social_env)
+
+capture.output(
+  summary(fit_binary_life_social_env),
+  file = "sem_life_social_env_summary.txt"
+)
+
+saveRDS(fit_binary_life_social_env, file = "sem_life_social_env_fit.rds")
+
+
+
+# Social, environment, life history, SSB
+brms_layered_binary_ssb_social_env_life <- 
+  bf(SSB ~ 
+       group_size + group_structure + hierarchical_structure + infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) + 
+  
+  bf(mean_precip_2019 ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(mean_cloud_2019   ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(predator_count    ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  
+  bf(sexual_dimorphism ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(median_body_mass  ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(bodymass_range    ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  bf(adult_sex_ratio   ~ mean_precip_2019 + mean_cloud_2019 + predator_count) +
+  
+  set_rescor(FALSE)
+
+fit_binary_social_env_life <- brm(
+  brms_layered_binary_ssb_social_env_life,
+  data = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123,
+  control = list(adapt_delta = 0.995, max_treedepth = 15)
+)
+
+ summary(fit_binary_social_env_life)
+
+loo_fit_social_env_life <- loo(fit_binary_social_env_life)
+print(loo_fit_social_env_life)
+
+capture.output(
+  summary(fit_binary_social_env_life),
+  file = "sem_social_env_life_summary.txt"
+)
+
+saveRDS(fit_binary_social_env_life, file = "sem_social_env_life_fit.rds")
+
+
+
+# Social, life history, environment, SSB
+brms_layered_binary_ssb_social_life_env <- 
+  bf(SSB ~ 
+       group_size + group_structure + hierarchical_structure + infant_rearing_strategy +
+       sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio +
+       mean_precip_2019 + mean_cloud_2019 + predator_count,
+     family = bernoulli(link = "logit")) +  
+  
+  bf(sexual_dimorphism ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(median_body_mass  ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(bodymass_range    ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  bf(adult_sex_ratio   ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy) +
+  
+  bf(mean_precip_2019 ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(mean_cloud_2019   ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  bf(predator_count    ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio) +
+  
+  set_rescor(FALSE)
+
+fit_binary_social_life_env <- brm(
+  brms_layered_binary_ssb_social_life_env,
+  data = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123,
+  control = list(adapt_delta = 0.995, max_treedepth = 15)
+)
+
+summary(fit_binary_social_life_env)
+
+loo_fit_social_life_env <- loo(fit_binary_social_life_env)
+print(loo_fit_social_life_env)
+
+capture.output(
+  summary(fit_binary_social_life_env),
+  file = "sem_social_life_env_summary.txt"
+)
+
+saveRDS(fit_binary_social_life_env, file = "sem_social_life_env_fit.rds")
+
+
+
+# Environment, SSB
+brms_binary_ssb_env_only <-
+  bf(
+    SSB ~ mean_precip_2019 + mean_cloud_2019 + predator_count,
+    family = bernoulli(link = "logit")
+  )
+
+fit_binary_env_only <- brm(
+  brms_binary_ssb_env_only,
+  data  = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123
+)
+
+summary(fit_binary_env_only)
+
+loo_fit_env_only <- loo(fit_binary_env_only)
+print(loo_fit_env_only)
+
+capture.output(
+  summary(fit_binary_env_only),
+  file = "sem_env_only_summary.txt"
+)
+
+saveRDS(fit_binary_env_only, file = "sem_env_only_fit.rds")
+
+
+
+# Life history, SSB
+brms_binary_ssb_life_only <-
+  bf(
+    SSB ~ sexual_dimorphism + median_body_mass + bodymass_range + adult_sex_ratio,
+    family = bernoulli(link = "logit")
+  )
+
+fit_binary_life_only <- brm(
+  brms_binary_ssb_life_only,
+  data  = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123
+)
+
+summary(fit_binary_life_only)
+
+loo_fit_life_only <- loo(fit_binary_life_only)
+print(loo_fit_life_only)
+
+capture.output(
+  summary(fit_binary_life_only),
+  file = "sem_life_only_summary.txt"
+)
+
+saveRDS(fit_binary_life_only, file = "sem_life_only_fit.rds")
+
+
+
+# Social, SSB
+brms_binary_ssb_social_only <-
+  bf(
+    SSB ~ group_size + group_structure + hierarchical_structure + infant_rearing_strategy,
+    family = bernoulli(link = "logit")
+  )
+
+fit_binary_social_only <- brm(
+  brms_binary_ssb_social_only,
+  data  = sem_data,
+  chains = 4, iter = 4000, cores = 4, seed = 123
+)
+
+summary(fit_binary_social_only)
+
+loo_fit_social_only <- loo(fit_binary_social_only)
+print(loo_fit_social_only)
+
+capture.output(
+  summary(fit_binary_social_only),
+  file = "sem_social_only_summary.txt"
+)
+
+saveRDS(fit_binary_social_only, file = "sem_social_only_fit.rds")
+
+
+
+
+
+##### PRIMATE GROUPS #####
+
+#Cercopithecidae - Environment
+data_cercopithecidae <- data %>%
+  filter(Category == "Cercopithecidae") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  # Ensure numeric
+
+matched_species <- intersect(rownames(env_traits_full), data_cercopithecidae$nexus_name)
+
+env_traits_matched <- env_traits_full[matched_species, ]
+
+data_matched <- data_cercopithecidae %>%
+  filter(nexus_name %in% matched_species)
+
+rownames(data_matched) <- data_matched$nexus_name
+
+env_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  env_traits_matched
+)
+
+env_model_data <- env_model_data[!is.na(env_model_data$SSB_binary), ]
+
+env_model_data <- env_model_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+pruned_tree_cercopithecidae <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+env_phyloglm_cercopithecidae <- phyloglm(
+  SSB_binary ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_model_data,
+  phy = pruned_tree_cercopithecidae,
+  method = "logistic_MPLE"
+)
+
+summary(env_phyloglm_cercopithecidae)
+
+
+#Cercopithecidae - Life History
+data_cercopithecidae <- data %>%
+  filter(Category == "Cercopithecidae") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  
+
+matched_species <- intersect(rownames(lifehist_traits_full), data_cercopithecidae$nexus_name)
+
+lifehist_traits_matched <- lifehist_traits_full[matched_species, ]
+
+data_matched <- data_cercopithecidae %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+lifehist_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  lifehist_traits_matched
+)
+
+lifehist_model_data <- lifehist_model_data[!is.na(lifehist_model_data$SSB_binary), ]
+
+lifehist_model_data <- lifehist_model_data %>%
+  mutate(across(
+    c(median_body_mass, bodymass_range, lifespan, adult_sex_ratio),
+    scale
+  ))
+
+pruned_tree_cercopithecidae <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+lifehist_phyloglm_cercopithecidae <- phyloglm(
+  SSB_binary ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data,
+  phy = pruned_tree_cercopithecidae,
+  method = "logistic_MPLE",
+  btol = 20, log.alpha.bound = 6
+)
+
+summary(lifehist_phyloglm_cercopithecidae)
+
+
+#Cercopithecidae - Social - model failed due to small sample size and limited variance in predictors
+data_cercopithecidae <- data %>%
+  filter(Category == "Cercopithecidae") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+data_cercopithecidae <- data_cercopithecidae %>%
+  mutate(
+    hierarchy_collapsed = ifelse(
+      tolower(hierarchical_structure) %in% c("patriarchal", "matriarchal"),
+      "high", "low"
+    ),
+    hierarchy_collapsed = factor(hierarchy_collapsed, levels = c("low", "high"))
+  )
+
+matched_species <- intersect(rownames(social_traits_full), data_cercopithecidae$nexus_name)
+
+social_traits_matched <- social_traits_full[matched_species, , drop = FALSE]
+
+data_matched <- data_cercopithecidae %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+social_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  group_structure = data_matched[matched_species, "group_structure"],
+  hierarchy_collapsed = data_matched[matched_species, "hierarchy_collapsed"],
+  group_size = social_traits_matched[matched_species, "median_group_size"]
+)
+
+social_model_data <- social_model_data %>%
+  filter(complete.cases(.)) %>%
+  mutate(group_size_scaled = scale(group_size)) %>%
+  select(SSB_binary, group_size_scaled, group_structure, hierarchy_collapsed)
+
+pruned_tree_cercopithecidae <- drop.tip(
+  pruned_tree,
+  setdiff(pruned_tree$tip.label, rownames(social_model_data))
+)
+
+social_phyloglm_cercopithecidae <- phyloglm(
+  SSB_binary ~ group_size_scaled + group_structure + hierarchy_collapsed,
+  data = social_model_data,
+  phy = pruned_tree_cercopithecidae,
+  method = "logistic_MPLE",
+  btol = 20
+)
+
+summary(social_phyloglm_cercopithecidae)
+
+
+#Platyrrhini - Environment
+data_platyrrhini <- data %>%
+  filter(Category == "Platyrrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  # Ensure numeric
+
+matched_species <- intersect(rownames(env_traits_full), data_platyrrhini$nexus_name)
+
+env_traits_matched <- env_traits_full[matched_species, ]
+
+data_matched <- data_platyrrhini %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+env_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  env_traits_matched
+)
+
+env_model_data <- env_model_data[!is.na(env_model_data$SSB_binary), ]
+
+env_model_data <- env_model_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+pruned_tree_platyrrhini <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+env_phyloglm_platyrrhini <- phyloglm(
+  SSB_binary ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_model_data,
+  phy = pruned_tree_platyrrhini,
+  method = "logistic_MPLE",
+  btol = 43
+)
+
+summary(env_phyloglm_platyrrhini)
+
+
+#Platyrrhini - Life History
+data_platyrrhini <- data %>%
+  filter(Category == "Platyrrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  # Ensure numeric
+
+matched_species <- intersect(rownames(lifehist_traits_full), data_platyrrhini$nexus_name)
+
+lifehist_traits_matched <- lifehist_traits_full[matched_species, ]
+
+data_matched <- data_platyrrhini %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+lifehist_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  lifehist_traits_matched
+)
+
+lifehist_model_data <- lifehist_model_data[!is.na(lifehist_model_data$SSB_binary), ]
+
+lifehist_model_data <- lifehist_model_data %>%
+  mutate(across(
+    c(median_body_mass, bodymass_range, lifespan, adult_sex_ratio),
+    scale
+  ))
+
+pruned_tree_platyrrhini <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+lifehist_phyloglm_platyrrhini <- phyloglm(
+  SSB_binary ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data,
+  phy = pruned_tree_platyrrhini,
+  method = "logistic_MPLE"
+)
+
+summary(lifehist_phyloglm_platyrrhini)
+
+
+#Platyrrhini - Social
+data_platyrrhini <- data %>%
+  filter(Category == "Platyrrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+data_platyrrhini <- data_platyrrhini %>%
+  mutate(
+    hierarchy_collapsed = ifelse(
+      tolower(hierarchical_structure) %in% c("patriarchal", "matriarchal"),
+      "high", "low"
+    ),
+    hierarchy_collapsed = factor(hierarchy_collapsed, levels = c("low", "high"))
+  )
+
+matched_species <- intersect(rownames(social_traits_full), data_platyrrhini$nexus_name)
+
+social_traits_matched <- social_traits_full[matched_species, , drop = FALSE]
+
+data_matched <- data_platyrrhini %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+social_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  group_structure = data_matched[matched_species, "group_structure"],
+  hierarchy_collapsed = data_matched[matched_species, "hierarchy_collapsed"],
+  group_size = social_traits_matched[matched_species, "median_group_size"]
+)
+
+social_model_data <- social_model_data %>%
+  filter(complete.cases(.)) %>%
+  mutate(group_size_scaled = scale(group_size)) %>%
+  select(SSB_binary, group_size_scaled, group_structure, hierarchy_collapsed)
+
+pruned_tree_platyrrhini <- drop.tip(
+  pruned_tree,
+  setdiff(pruned_tree$tip.label, rownames(social_model_data))
+)
+
+social_phyloglm_platyrrhini <- phyloglm(
+  SSB_binary ~ group_size_scaled + group_structure + hierarchy_collapsed,
+  data = social_model_data,
+  phy = pruned_tree_platyrrhini,
+  method = "logistic_MPLE",
+  btol = 20
+)
+
+summary(social_phyloglm_platyrrhini)
+
+
+#Apes (Hominoidae and Hylobatidae) - Environment
+data_apes <- data %>%
+  filter(Category %in% c("Hominoidae", "Hylobatidae")) %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))  
+
+matched_species <- intersect(rownames(env_traits_full), data_apes$nexus_name)
+
+env_traits_matched <- env_traits_full[matched_species, ]
+
+data_matched <- data_apes %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+env_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  env_traits_matched
+)
+
+env_model_data <- env_model_data[!is.na(env_model_data$SSB_binary), ]
+
+env_model_data <- env_model_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+pruned_tree_apes <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+env_phyloglm_apes <- phyloglm(
+  SSB_binary ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_model_data,
+  phy = pruned_tree_apes,
+  method = "logistic_MPLE",
+  btol = 12
+)
+
+summary(env_phyloglm_apes)
+
+
+#Apes (Hominoidae and Hylobatidae) - Life History
+data_apes <- data %>%
+  filter(Category %in% c("Hominoidae", "Hylobatidae")) %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+matched_species <- intersect(rownames(lifehist_traits_full), data_apes$nexus_name)
+
+lifehist_traits_matched <- lifehist_traits_full[matched_species, ]
+
+data_matched <- data_apes %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+lifehist_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  lifehist_traits_matched
+)
+
+lifehist_model_data <- lifehist_model_data[!is.na(lifehist_model_data$SSB_binary), ]
+
+lifehist_model_data <- lifehist_model_data %>%
+  mutate(across(
+    c(median_body_mass, bodymass_range, lifespan, adult_sex_ratio),
+    scale
+  ))
+
+pruned_tree_apes <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+lifehist_phyloglm_apes <- phyloglm(
+  SSB_binary ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data,
+  phy = pruned_tree_apes,
+  method = "logistic_MPLE",
+  btol = 40, log.alpha.bound = 12
+)
+
+summary(lifehist_phyloglm_apes)
+
+
+#Apes (Hominoidae and Hylobatidae) - Social - model failed due to small sample size and limited variance in predictors
+data_apes <- data %>%
+  filter(Category %in% c("Hominoidae", "Hylobatidae")) %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+data_apes <- data_apes %>%
+  mutate(
+    hierarchy_collapsed = ifelse(
+      tolower(hierarchical_structure) %in% c("patriarchal", "matriarchal"),
+      "high", "low"
+    ),
+    hierarchy_collapsed = factor(hierarchy_collapsed, levels = c("low", "high"))
+  )
+
+matched_species <- intersect(rownames(social_traits_full), data_apes$nexus_name)
+
+social_traits_matched <- social_traits_full[matched_species, , drop = FALSE]
+
+data_matched <- data_apes %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+social_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  group_structure = data_matched[matched_species, "group_structure"],
+  hierarchy_collapsed = data_matched[matched_species, "hierarchy_collapsed"],
+  group_size = social_traits_matched[matched_species, "median_group_size"]
+)
+
+social_model_data <- social_model_data %>%
+  filter(complete.cases(.)) %>%
+  mutate(group_size_scaled = scale(group_size)) %>%
+  select(SSB_binary, group_size_scaled, group_structure, hierarchy_collapsed)
+
+pruned_tree_apes <- drop.tip(
+  pruned_tree,
+  setdiff(pruned_tree$tip.label, rownames(social_model_data))
+)
+
+social_model_data <- social_model_data %>%
+  mutate(
+    group_structure = factor(group_structure),
+    hierarchy_collapsed = droplevels(hierarchy_collapsed)
+  )
+
+social_phyloglm_apes <- phyloglm(
+  SSB_binary ~ group_size_scaled + group_structure + hierarchy_collapsed,
+  data = social_model_data,
+  phy = pruned_tree_apes,
+  method = "logistic_MPLE",
+  btol = 20
+)
+
+summary(social_phyloglm_apes)
+
+
+#Strepsirrhini - Environment
+data_streps <- data %>%
+  filter(Category == "Strepsirrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+matched_species <- intersect(rownames(env_traits_full), data_streps$nexus_name)
+
+env_traits_matched <- env_traits_full[matched_species, ]
+
+data_matched <- data_streps %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+env_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  env_traits_matched
+)
+
+env_model_data <- env_model_data[!is.na(env_model_data$SSB_binary), ]
+
+env_model_data <- env_model_data %>%
+  mutate(across(
+    c(mean_temp_2019, mean_precip_2019, mean_cloud_2019, mean_biomass_2019, predator_count),
+    scale
+  ))
+
+pruned_tree_streps <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+env_phyloglm_streps <- phyloglm(
+  SSB_binary ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 + mean_biomass_2019 + predator_count,
+  data = env_model_data,
+  phy = pruned_tree_streps,
+  method = "logistic_MPLE",
+  btol = 35
+)
+
+summary(env_phyloglm_streps)
+
+
+#Strepsirrhini - Life History
+data_streps <- data %>%
+  filter(Category == "Strepsirrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+matched_species <- intersect(rownames(lifehist_traits_full), data_streps$nexus_name)
+
+lifehist_traits_matched <- lifehist_traits_full[matched_species, ]
+
+data_matched <- data_streps %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+lifehist_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  lifehist_traits_matched
+)
+
+lifehist_model_data <- lifehist_model_data[!is.na(lifehist_model_data$SSB_binary), ]
+
+lifehist_model_data <- lifehist_model_data %>%
+  mutate(across(
+    c(median_body_mass, bodymass_range, lifespan, adult_sex_ratio),
+    scale
+  ))
+
+pruned_tree_streps <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, matched_species))
+
+lifehist_phyloglm_streps <- phyloglm(
+  SSB_binary ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_model_data,
+  phy = pruned_tree_streps,
+  method = "logistic_MPLE",
+  btol = 30, log.alpha.bound = 12
+)
+
+summary(lifehist_phyloglm_streps)
+
+
+#Strepsirrhini - Social
+data_strepsirrhini <- data %>%
+  filter(Category == "Strepsirrhini") %>%
+  mutate(ssb_presence = as.numeric(ssb_presence))
+
+data_strepsirrhini <- data_strepsirrhini %>%
+  mutate(
+    hierarchy_collapsed = ifelse(
+      tolower(hierarchical_structure) %in% c("patriarchal", "matriarchal"),
+      "high", "low"
+    ),
+    hierarchy_collapsed = factor(hierarchy_collapsed, levels = c("low", "high"))
+  )
+
+matched_species <- intersect(rownames(social_traits_full), data_strepsirrhini$nexus_name)
+
+social_traits_matched <- social_traits_full[matched_species, , drop = FALSE]
+
+data_matched <- data_strepsirrhini %>%
+  filter(nexus_name %in% matched_species)
+rownames(data_matched) <- data_matched$nexus_name
+
+social_model_data <- data.frame(
+  SSB_binary = data_matched[matched_species, "ssb_presence"],
+  group_structure = data_matched[matched_species, "group_structure"],
+  hierarchy_collapsed = data_matched[matched_species, "hierarchy_collapsed"],
+  group_size = social_traits_matched[matched_species, "median_group_size"]
+)
+
+social_model_data <- social_model_data %>%
+  filter(complete.cases(.)) %>%
+  mutate(
+    group_size_scaled = scale(group_size),
+    group_structure = factor(group_structure),
+    hierarchy_collapsed = droplevels(hierarchy_collapsed)
+  ) %>%
+  select(SSB_binary, group_size_scaled, group_structure, hierarchy_collapsed)
+
+pruned_tree_strepsirrhini <- drop.tip(
+  pruned_tree,
+  setdiff(pruned_tree$tip.label, rownames(social_model_data))
+)
+
+social_phyloglm_strepsirrhini <- phyloglm(
+  SSB_binary ~ group_size_scaled + group_structure + hierarchy_collapsed,
+  data = social_model_data,
+  phy = pruned_tree_strepsirrhini,
+  method = "logistic_MPLE",
+  btol = 50
+)
+
+summary(social_phyloglm_strepsirrhini)
+
+
+
+##### SEX DIFFERENCES IN SSB #####
+
+#Male SSB and environment
+ssbdata$logMale <- log1p(ssbdata$male_ssb / ssbdata$sampling_hours)
+ssbdata$logFemale <- log1p(ssbdata$female_ssb / ssbdata$sampling_hours)
+
+log_male_vec <- setNames(ssbdata$logMale, ssbdata$nexus_name)
+
+env_male_df <- data.frame(
+  male_ssb = log_male_vec[rownames(env_traits_subset)],
+  env_traits_subset
+)
+
+env_male_df <- env_male_df[complete.cases(env_male_df), ]
+
+env_male_df[, c("mean_temp_2019", "mean_precip_2019", "mean_cloud_2019",
+                "mean_biomass_2019", "predator_count")] <-
+  scale(env_male_df[, c("mean_temp_2019", "mean_precip_2019", "mean_cloud_2019",
+                        "mean_biomass_2019", "predator_count")])
+
+tree_env_male <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(env_male_df)))
+
+model_male_env <- phylolm(
+  male_ssb ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+    mean_biomass_2019 + predator_count,
+  data = env_male_df,
+  phy = tree_env_male,
+  model = "lambda"
+)
+
+summary(model_male_env)
+
+
+#Male SSB and life history
+log_male_vec <- setNames(ssbdata$logMale, ssbdata$nexus_name)
+
+lifehist_male_df <- data.frame(
+  male_ssb = log_male_vec[rownames(lifehist_traits_subset)],
+  lifehist_traits_subset
+)
+
+lifehist_male_df <- lifehist_male_df[complete.cases(lifehist_male_df), ]
+
+lifehist_male_df[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")] <-
+  scale(lifehist_male_df[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")])
+
+tree_lifehist_male <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(lifehist_male_df)))
+
+model_male_lifehist <- phylolm(
+  male_ssb ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_male_df,
+  phy = tree_lifehist_male,
+  model = "lambda"
+)
+
+summary(model_male_lifehist)
+
+
+#Male SSB and social - model failed due to small sample size and limited variance in predictors
+log_male_vec <- setNames(ssbdata$logMale, ssbdata$nexus_name)
+
+social_male_df <- data.frame(
+  male_ssb = log_male_vec[rownames(social_traits_subset)],
+  social_traits_subset
+)
+
+social_male_df <- social_male_df[complete.cases(social_male_df), ]
+
+social_male_df[, c("median_group_size")] <- 
+  scale(social_male_df[, c("median_group_size")])
+
+tree_social_male <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(social_male_df)))
+
+model_male_social <- phylolm(
+  male_ssb ~ group_structure + hierarchical_structure + mating_system + infant_rearing_strategy + median_group_size,
+  data = social_male_df,
+  phy = tree_social_male,
+  model = "lambda"
+)
+
+summary(model_male_social)
+
+
+#Male SSB and simplified social - model failed due to small sample size and limited variance in predictors
+log_male_vec <- setNames(ssbdata$logMale, ssbdata$nexus_name)
+
+social_male_df <- data.frame(
+  male_ssb = log_male_vec[rownames(social_traits_subset)],
+  group_structure = social_traits_subset$group_structure,
+  hierarchical_structure = social_traits_subset$hierarchical_structure,
+  median_group_size = social_traits_subset$median_group_size
+)
+
+social_male_df$hierarchical_structure <- as.character(social_male_df$hierarchical_structure)
+social_male_df$hierarchical_structure[social_male_df$hierarchical_structure %in% c("egalitarian", "dominant pair")] <- "low"
+social_male_df$hierarchical_structure[social_male_df$hierarchical_structure %in% c("matriarchal", "patriarchal")] <- "high"
+social_male_df$hierarchical_structure <- as.factor(social_male_df$hierarchical_structure)
+
+social_male_df <- social_male_df[complete.cases(social_male_df), ]
+
+social_male_df$median_group_size <- scale(social_male_df$median_group_size)
+
+tree_social_male <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(social_male_df)))
+
+model_male_social_simple <- phylolm(
+  male_ssb ~ group_structure + hierarchical_structure + median_group_size,
+  data = social_male_df,
+  phy = tree_social_male,
+  model = "lambda"
+)
+
+summary(model_male_social_simple)
+
+
+#Female SSB and environment
+ssbdata$logFemale <- log1p(ssbdata$female_ssb / ssbdata$sampling_hours)
+log_female_vec <- setNames(ssbdata$logFemale, ssbdata$nexus_name)
+
+env_female_df <- data.frame(
+  female_ssb = log_female_vec[rownames(env_traits_subset)],
+  env_traits_subset
+)
+
+env_female_df <- env_female_df[complete.cases(env_female_df), ]
+
+env_female_df[, c("mean_temp_2019", "mean_precip_2019", "mean_cloud_2019",
+                  "mean_biomass_2019", "predator_count")] <-
+  scale(env_female_df[, c("mean_temp_2019", "mean_precip_2019", "mean_cloud_2019",
+                          "mean_biomass_2019", "predator_count")])
+
+tree_env_female <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(env_female_df)))
+
+model_female_env <- phylolm(
+  female_ssb ~ mean_temp_2019 + mean_precip_2019 + mean_cloud_2019 +
+    mean_biomass_2019 + predator_count,
+  data = env_female_df,
+  phy = tree_env_female,
+  model = "lambda"
+)
+
+summary(model_female_env)
+
+
+#Female SSB and life history
+log_female_vec <- setNames(ssbdata$logFemale, ssbdata$nexus_name)
+
+lifehist_female_df <- data.frame(
+  female_ssb = log_female_vec[rownames(lifehist_traits_subset)],
+  lifehist_traits_subset
+)
+
+lifehist_female_df <- lifehist_female_df[complete.cases(lifehist_female_df), ]
+
+lifehist_female_df[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")] <-
+  scale(lifehist_female_df[, c("median_body_mass", "bodymass_range", "lifespan", "adult_sex_ratio")])
+
+tree_lifehist_female <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(lifehist_female_df)))
+
+model_female_lifehist <- phylolm(
+  female_ssb ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
+  data = lifehist_female_df,
+  phy = tree_lifehist_female,
+  model = "lambda"
+)
+
+summary(model_female_lifehist)
+
+
+#Female SSB and social - model failed due to small sample size and limited variance in predictors
+log_female_vec <- setNames(ssbdata$logFemale, ssbdata$nexus_name)
+
+social_female_df <- data.frame(
+  female_ssb = log_female_vec[rownames(social_traits_subset)],
+  social_traits_subset
+)
+
+social_female_df <- social_female_df[complete.cases(social_female_df), ]
+
+social_female_df[, c("median_group_size")] <- 
+  scale(social_female_df[, c("median_group_size")])
+
+tree_social_female <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(social_female_df)))
+
+model_female_social <- phylolm(
+  female_ssb ~ group_structure + hierarchical_structure + mating_system + infant_rearing_strategy + median_group_size,
+  data = social_female_df,
+  phy = tree_social_female,
+  model = "lambda"
+)
+
+summary(model_female_social)
+
+
+#Female SSB and simplified social - model failed due to small sample size and limited variance in predictors
+log_female_vec <- setNames(ssbdata$logFemale, ssbdata$nexus_name)
+
+social_female_df <- data.frame(
+  female_ssb = log_female_vec[rownames(social_traits_subset)],
+  group_structure = social_traits_subset$group_structure,
+  hierarchical_structure = social_traits_subset$hierarchical_structure,
+  median_group_size = social_traits_subset$median_group_size
+)
+
+social_female_df$hierarchical_structure <- as.character(social_female_df$hierarchical_structure)
+social_female_df$hierarchical_structure[social_female_df$hierarchical_structure %in% c("egalitarian", "dominant pair")] <- "low"
+social_female_df$hierarchical_structure[social_female_df$hierarchical_structure %in% c("matriarchal", "patriarchal")] <- "high"
+social_female_df$hierarchical_structure <- as.factor(social_female_df$hierarchical_structure)
+
+social_female_df <- social_female_df[complete.cases(social_female_df), ]
+
+social_female_df$median_group_size <- scale(social_female_df$median_group_size)
+
+tree_social_female <- drop.tip(pruned_ssb_tree, setdiff(pruned_ssb_tree$tip.label, rownames(social_female_df)))
+
+model_female_social_simple <- phylolm(
+  female_ssb ~ group_structure + hierarchical_structure + median_group_size,
+  data = social_female_df,
+  phy = tree_social_female,
+  model = "lambda"
+)
+
+summary(model_female_social_simple)
+
+
+
+##### Species Similarity Checks #####
+
+install.packages("dplyr")
+install.packages("vegan")
+install.packages("ggplot2")
+
+library(dplyr)
+library(vegan)
+library(ggplot2)
+library(tidyr)
+
+df <- read.csv("Species list comparison.csv")
+Species_Search1 <- df$sexual_behaviour_search
+Mentions_1 <- df$sexual_behavious_mentions
+Species_Search2 <- df$ssb_search
+Mentions_2 <- df$ssb_mentions
+
+#Jaccard Similarity Index
+df <- df %>%
+  mutate(Presence_1 = ifelse(is.na(Mentions_1), 0, ifelse(Mentions_1 > 0, 1, 0)),
+         Presence_2 = ifelse(is.na(Mentions_2), 0, ifelse(Mentions_2 > 0, 1, 0)))
+
+intersection <- sum(df$Presence_1 & df$Presence_2)  
+union <- sum(df$Presence_1 | df$Presence_2)  
+
+jaccard_similarity <- intersection / union
+print(paste("Jaccard similarity index:", round(jaccard_similarity, 3)))
+
+
+#Fisher Test
+contingency_table <- table(df$Presence_1, df$Presence_2)
+fisher_test <- fisher.test(contingency_table)
+print(fisher_test)
+
+#Spearman's rank correlation
+spearman_corr <- cor.test(Mentions_1, Mentions_2, method = "spearman")
+print(spearman_corr)
+
+
+
+
+
