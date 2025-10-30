@@ -1,6 +1,3 @@
-setwd("Z:/Chloe Coxshall/Literature Analysis (C1)/Data and Analysis ONLY")
-
-
 ##### Create Primate Phylogenetic Trees #####
 
 install.packages("rotl")
