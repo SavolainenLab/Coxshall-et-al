@@ -114,10 +114,10 @@ p <- ggtree(grouped_tree, layout = "circular", aes(color = group)) +
   geom_tree(size = 0.6) +
   scale_color_manual(values = c(
     "Strepsirrhini" = "#00BFC4",
-    "Platyrrhini" = "#66a61e",
+    "Platyrrhini" = "#00008B",
     "Cercopithecidae" = "#F4A3C1",
-    "Hominoidae" = "#6A3D9A",
-    "Hylobatidae" = "#FFB000",
+    "Hominoidae" = "#FFB000",
+    "Hylobatidae" = "#6A3D9A",
     "Tarsiiformes" = "#C71E1D"
   ), na.value = "grey70") +
   theme(
