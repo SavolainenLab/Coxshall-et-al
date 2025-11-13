@@ -428,28 +428,22 @@ env_vars <- c("nexus_name","ssb_prevalence","ssb_ethogram",
 
 d0 <- data[, env_vars]
 
-## Keep zeros for non-ethogram species; positives only from ethogram==1 species
 d1 <- d0 |>
   mutate(
     ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
     ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
   ) |>
-  ## Drop rows only if predictors (not response) are missing
   filter(if_all(c("nexus_name","mean_temp_2019","mean_precip_2019","mean_cloud_2019",
                   "mean_biomass_2019","predator_count"), ~ !is.na(.)))
-# If you prefer to drop ethogram==1 with missing prevalence instead of setting 0:
-# |> filter(!(ssb_ethogram == 1 & is.na(ssb_prevalence)))
 
 species_in_data <- unique(d1$nexus_name)
 tree1 <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_in_data))
 d1 <- d1 |> filter(nexus_name %in% tree1$tip.label)
 
-# Phylo correlation matrix
 A <- vcv(tree1, corr = TRUE)
 A <- A[tree1$tip.label, tree1$tip.label]
 d1$nexus_name <- factor(d1$nexus_name, levels = rownames(A))
 
-# Scale predictors
 scale_cols <- c("mean_temp_2019","mean_precip_2019","mean_cloud_2019",
                 "mean_biomass_2019","predator_count")
 d1 <- d1 |> mutate(across(all_of(scale_cols), scale))
@@ -587,7 +581,6 @@ summary(lifehist_model_subset)
 
 
 ## SSB prevalence filtered for ethogram completeness
-## --- Life history × SSB prevalence (ethogram-filtered) ---
 
 # 0) Ensure ssb_ethogram is present in ssbdata (pull from `data` only if missing)
 if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) {
@@ -595,13 +588,11 @@ if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) 
 }
 rownames(ssbdata) <- ssbdata$nexus_name
 
-# 1) Filter to ethogram==1 and intersect with life-history subset
 ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
 rownames(ssb_etho) <- ssb_etho$nexus_name
 
 species_lh <- intersect(rownames(lifehist_traits_subset), rownames(ssb_etho))
 
-# 2) Scale life-history predictors & build analysis frame
 lifehist_scaled_subset <- as.data.frame(scale(lifehist_traits_subset))
 lifehist_model_data_subset <- data.frame(
   ssb_prevalence = ssb_etho[species_lh, "ssb_prevalence"],
@@ -612,16 +603,13 @@ lifehist_model_data_subset <- data.frame(
                                        "adult_sex_ratio"), drop = FALSE]
 )
 
-# Drop NAs in response
 lifehist_model_data_subset <- lifehist_model_data_subset[!is.na(lifehist_model_data_subset$ssb_prevalence), , drop = FALSE]
 
-# 3) Prune & align tree to these species (make a fresh tree for this model)
 final_lh_tree <- ape::drop.tip(pruned_ssb_tree,
                                setdiff(pruned_ssb_tree$tip.label, rownames(lifehist_model_data_subset)))
 lifehist_model_data_subset <- lifehist_model_data_subset[final_lh_tree$tip.label, , drop = FALSE]
 stopifnot(identical(rownames(lifehist_model_data_subset), final_lh_tree$tip.label))
 
-# 4) Fit phylolm (Gaussian, λ)
 lifehist_model_subset <- phylolm::phylolm(
   ssb_prevalence ~ sexual_dimorphism + median_body_mass + bodymass_range + lifespan + adult_sex_ratio,
   data  = lifehist_model_data_subset,
@@ -656,20 +644,13 @@ d0_lh <- data.frame(
   lifehist_traits_full[species_lh, lifehist_predictors, drop = FALSE]
 )
 
-## Ethogram-qualified response:
-## - ethogram==1 keeps observed prevalence
-## - otherwise set to 0 (keep zeros for the hurdle)
 d1_lh <- d0_lh |>
   mutate(
     ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
     ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
   ) |>
-  # Drop rows only if predictors (not response) are missing
   filter(if_all(c("nexus_name", all_of(lifehist_predictors)), ~ !is.na(.)))
-# If you prefer to drop ethogram==1 with missing/non-positive prevalence, uncomment:
-# d1_lh <- d1_lh |> filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0)))
 
-## Tree + covariance
 tree_lh <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_lh$nexus_name))
 d1_lh   <- d1_lh |> filter(nexus_name %in% tree_lh$tip.label)
 
@@ -678,10 +659,8 @@ A_lh <- A_lh[tree_lh$tip.label, tree_lh$tip.label]
 
 d1_lh$nexus_name <- factor(d1_lh$nexus_name, levels = rownames(A_lh))
 
-## Scale predictors
 d1_lh <- d1_lh |> mutate(across(all_of(lifehist_predictors), scale))
 
-## Family + priors (as in your original)
 fam <- hurdle_lognormal()
 pri <- c(
   prior(normal(0,1), class = "b"),
@@ -720,7 +699,6 @@ loo(brms_hurdle_lifehist)
 
 
 ## Hurdle filtered for ethogram completeness
-# Hurdle model – Life history (ethogram-qualified)
 library(dplyr)
 library(ape)
 library(brms)
@@ -734,28 +712,22 @@ lh_vars <- c("nexus_name","ssb_prevalence","ssb_ethogram",
 
 d0 <- data[, lh_vars]
 
-## Keep zeros for non-ethogram species; positives only from ethogram==1 species
 d1 <- d0 |>
   mutate(
     ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
     ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
   ) |>
-  # Drop rows only if predictors (not response) are missing
   filter(if_all(c("nexus_name","sexual_dimorphism","median_body_mass",
                   "bodymass_range","lifespan","adult_sex_ratio"), ~ !is.na(.)))
-# If you prefer to drop ethogram==1 with missing prevalence instead of setting 0:
-# d1 <- d1 |> filter(!(ssb_ethogram == 1 & is.na(ssb_prevalence)))
 
 species_in_data <- unique(d1$nexus_name)
 tree_lh <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, species_in_data))
 d1 <- d1 |> filter(nexus_name %in% tree_lh$tip.label)
 
-# Phylo correlation matrix
 A_lh <- vcv(tree_lh, corr = TRUE)
 A_lh <- A_lh[tree_lh$tip.label, tree_lh$tip.label]
 d1$nexus_name <- factor(d1$nexus_name, levels = rownames(A_lh))
 
-# Scale predictors
 scale_cols <- c("sexual_dimorphism","median_body_mass","bodymass_range",
                 "lifespan","adult_sex_ratio")
 d1 <- d1 |> mutate(across(all_of(scale_cols), scale))
@@ -1017,15 +989,12 @@ summary(social_model_subset)
 
 
 ## SSB Prevalence filtered for ethogram completeness
-## --- Social × SSB prevalence (ethogram-filtered) ---
 
-# 0) Ensure ssb_ethogram exists in ssbdata (pull from `data` only if missing)
 if (!("ssb_ethogram" %in% names(ssbdata)) && ("ssb_ethogram" %in% names(data))) {
   ssbdata$ssb_ethogram <- data[match(ssbdata$nexus_name, data$nexus_name), "ssb_ethogram"]
 }
 rownames(ssbdata) <- ssbdata$nexus_name
 
-# 1) Build your social trait subset (as you had it)
 social_traits_subset <- ssbdata[, c("nexus_name", "median_group_size", "hierarchical_structure",
                                     "group_structure", "mating_system", "infant_rearing_strategy")]
 rownames(social_traits_subset) <- social_traits_subset$nexus_name
@@ -1038,20 +1007,17 @@ social_scaled_numeric <- scale(social_numeric)
 social_scaled_subset  <- data.frame(social_scaled_numeric, social_categorical)
 rownames(social_scaled_subset) <- rownames(social_traits_subset)
 
-# 2) Filter to ethogram==1 and intersect with social subset
 ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
 rownames(ssb_etho) <- ssb_etho$nexus_name
 
 species_soc <- intersect(rownames(social_scaled_subset), rownames(ssb_etho))
 
-# 3) Build analysis frame (prevalence) and clean NAs
 social_model_data_subset <- data.frame(
   ssb_prevalence = ssb_etho[species_soc, "ssb_prevalence"],
   social_scaled_subset[species_soc, , drop = FALSE]
 )
 social_model_data_subset <- na.omit(social_model_data_subset)
 
-# factors + drop unused levels
 fac_cols <- c("hierarchical_structure", "group_structure", "mating_system", "infant_rearing_strategy")
 for (cc in fac_cols) {
   if (cc %in% names(social_model_data_subset)) {
@@ -1059,20 +1025,17 @@ for (cc in fac_cols) {
   }
 }
 
-# 4) Prune & align tree
 final_soc_tree <- ape::drop.tip(pruned_ssb_tree,
                                 setdiff(pruned_ssb_tree$tip.label, rownames(social_model_data_subset)))
 social_model_data_subset <- social_model_data_subset[final_soc_tree$tip.label, , drop = FALSE]
 stopifnot(identical(rownames(social_model_data_subset), final_soc_tree$tip.label))
 
-# 5) Build formula, automatically skipping any factor that collapsed to 1 level
 keep_factors <- fac_cols[fac_cols %in% names(social_model_data_subset)]
 keep_factors <- keep_factors[sapply(social_model_data_subset[keep_factors], nlevels) > 1]
 rhs_terms    <- c("median_group_size", keep_factors)
 form_soc     <- as.formula(paste("ssb_prevalence ~", paste(rhs_terms, collapse = " + ")))
 cat("Social model RHS terms:", paste(rhs_terms, collapse = " + "), "\n")
 
-# 6) Fit phylolm (Gaussian, λ)
 social_model_subset <- phylolm::phylolm(
   formula = form_soc,
   data    = social_model_data_subset,
@@ -1124,7 +1087,6 @@ summary(model_prevalence)
 
 
 ## SSB Prevalence filtered for ethogram completeness
-## --- Ensure collapsed vars exist (keeps your definitions) ---
 if (!"hierarchical_collapsed" %in% names(ssbdata)) {
   ssbdata$hierarchical_collapsed <- as.character(ssbdata$hierarchical_structure)
   ssbdata$hierarchical_collapsed[ssbdata$hierarchical_collapsed %in% c("Matriarchal","Patriarchal")] <- "High"
@@ -1150,7 +1112,6 @@ if (!"log_prevalence" %in% names(ssbdata)) {
 
 rownames(ssbdata) <- ssbdata$nexus_name
 
-## --- Filter to ethogram==1 and build model data ---
 if (!"ssb_ethogram" %in% names(ssbdata)) stop("ssb_ethogram not found in ssbdata.")
 ssb_etho <- ssbdata[ssbdata$ssb_ethogram %in% c(1, TRUE), , drop = FALSE]
 rownames(ssb_etho) <- ssb_etho$nexus_name
@@ -1161,17 +1122,14 @@ model_data <- ssb_etho[complete.cases(
 ), c("log_prevalence","group_size_scaled",
      "group_structure_collapsed","hierarchical_collapsed"), drop = FALSE]
 
-## Drop unused factor levels
 model_data$group_structure_collapsed <- droplevels(model_data$group_structure_collapsed)
 model_data$hierarchical_collapsed    <- droplevels(model_data$hierarchical_collapsed)
 
-## --- Prune & align tree ---
 ssbtree_pruned <- drop.tip(ssbtree, setdiff(ssbtree$tip.label, rownames(ssbdata)))
 final_tree     <- drop.tip(ssbtree_pruned, setdiff(ssbtree_pruned$tip.label, rownames(model_data)))
 model_data     <- model_data[final_tree$tip.label, , drop = FALSE]
 stopifnot(identical(rownames(model_data), final_tree$tip.label))
 
-## --- Build formula (auto-drop any factor that collapsed to 1 level) ---
 keep_factors <- c()
 if ("group_structure_collapsed" %in% names(model_data) && nlevels(model_data$group_structure_collapsed) > 1)
   keep_factors <- c(keep_factors, "group_structure_collapsed")
@@ -1182,7 +1140,6 @@ rhs_terms <- c("group_size_scaled", keep_factors)
 form_soc_prev <- as.formula(paste("log_prevalence ~", paste(rhs_terms, collapse = " + ")))
 cat("Fitting with terms:", paste(rhs_terms, collapse = " + "), "\n")
 
-## --- Fit phylolm (Gaussian, λ) ---
 model_prevalence_etho <- phylolm(
   form_soc_prev,
   data = model_data,
@@ -1336,7 +1293,6 @@ loo(brms_hurdle_social_mt)
 
 
 ## Hurdle model filtered for ethogram completeness
-# Hurdle model - group size, group structure, collapsed hierarchy (ethogram-qualified)
 library(dplyr)
 library(ape)
 library(brms)
@@ -1356,36 +1312,26 @@ d0_soc <- data.frame(
   hierarchical_collapsed = factor(data$hierarchical_collapsed, levels = c("Low","High"))
 )
 
-# Ethogram-qualified response:
-# - ethogram==1 keeps observed prevalence
-# - otherwise set to 0 (keep zeros for the hurdle)
 d1_soc <- d0_soc |>
   mutate(
     ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
     ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
   ) |>
-  # OPTIONAL: if an ethogram==1 species has missing/non-positive prevalence, drop it
-  # filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0))) |>
-  # Keep rows only if predictors are present
   filter(!is.na(nexus_name)) |>
   filter(if_all(c("median_group_size","group_structure","hierarchical_collapsed"), ~ !is.na(.)))
 
-# Phylogeny + covariance
 tree_soc <- drop.tip(pruned_tree, setdiff(pruned_tree$tip.label, d1_soc$nexus_name))
 d1_soc   <- d1_soc |> filter(nexus_name %in% tree_soc$tip.label)
 
 A_soc <- vcv(tree_soc, corr = TRUE)
 A_soc <- A_soc[tree_soc$tip.label, tree_soc$tip.label]
 
-# Clean factor levels post-pruning
 d1_soc$nexus_name <- factor(d1_soc$nexus_name, levels = rownames(A_soc))
 d1_soc$group_structure <- droplevels(d1_soc$group_structure)
 d1_soc$hierarchical_collapsed <- droplevels(d1_soc$hierarchical_collapsed)
 
-# Scale group size
 d1_soc$group_size_scaled <- scale(d1_soc$median_group_size)
 
-# Family + priors (kept as in your original)
 fam <- hurdle_lognormal()
 pri <- c(
   prior(normal(0,1), class = "b"),
@@ -1589,17 +1535,14 @@ library(dplyr)
 library(ape)
 library(brms)
 
-# Ensure rownames for lookup from `data`
 if (is.null(rownames(data)) || !all(rownames(combined_df) %in% rownames(data))) {
   stopifnot("nexus_name" %in% names(data))
   rownames(data) <- data$nexus_name
 }
 
-# Pull response + ethogram from `data` using species rownames in combined_df
 combined_df$ssb_prevalence <- as.numeric(data[rownames(combined_df), "ssb_prevalence"])
 combined_df$ssb_ethogram   <- as.numeric(data[rownames(combined_df), "ssb_ethogram"])
 
-# Variable set (add ssb_ethogram)
 vars_h <- c(
   "ssb_prevalence", "ssb_ethogram",
   "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
@@ -1608,28 +1551,20 @@ vars_h <- c(
   "group_structure","hierarchical_structure","mating_system","infant_rearing_strategy"
 )
 
-# Start from combined_df, keep only needed columns
 dat_h0 <- combined_df[, vars_h, drop = FALSE]
 
-# Ethogram-qualified response:
-# - ethogram==1 keeps observed prevalence
-# - otherwise set to 0 (retain zeros for hurdle)
 dat_h0 <- dat_h0 |>
   mutate(
     ssb_ethogram   = ifelse(is.na(ssb_ethogram), 0, ssb_ethogram),
     ssb_prevalence = ifelse(ssb_ethogram == 1, ssb_prevalence, 0)
   )
-# OPTIONAL: if an ethogram==1 species has missing/non-positive prevalence, drop it:
-# dat_h0 <- dat_h0 |> filter(!(ssb_ethogram == 1 & (is.na(ssb_prevalence) | ssb_prevalence <= 0)))
 
-# Coerce/cast some predictors safely (in case of character)
 dat_h0$group_size         <- as.numeric(as.character(dat_h0$group_size))
 dat_h0$group_structure    <- factor(dat_h0$group_structure)
 dat_h0$hierarchical_structure  <- factor(dat_h0$hierarchical_structure)
 dat_h0$mating_system           <- factor(dat_h0$mating_system)
 dat_h0$infant_rearing_strategy <- factor(dat_h0$infant_rearing_strategy)
 
-# Drop rows with missing PREDICTORS (do not filter on ssb_prevalence)
 pred_cols <- c(
   "mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
   "predator_count","sexual_dimorphism","median_body_mass","bodymass_range","lifespan",
@@ -1639,23 +1574,19 @@ pred_cols <- c(
 dat_h <- dat_h0 |>
   filter(if_all(all_of(pred_cols), ~ !is.na(.)))
 
-# Phylogeny
 sp_h   <- rownames(dat_h)
 tree_h <- drop.tip(combined_tree, setdiff(combined_tree$tip.label, sp_h))
 stopifnot(all(sp_h %in% tree_h$tip.label))
 
-# Phylo covariance
 A <- vcv(tree_h, corr = TRUE)
 A <- A[tree_h$tip.label, tree_h$tip.label]
 
-# Index for RE + drop unused factor levels post-pruning
 dat_h$nexus_name <- factor(rownames(dat_h), levels = rownames(A))
 dat_h$group_structure         <- droplevels(dat_h$group_structure)
 dat_h$hierarchical_structure  <- droplevels(dat_h$hierarchical_structure)
 dat_h$mating_system           <- droplevels(dat_h$mating_system)
 dat_h$infant_rearing_strategy <- droplevels(dat_h$infant_rearing_strategy)
 
-# Priors & family (unchanged from your original)
 pri <- c(
   prior(normal(0,1), class = "b"),
   prior(normal(0,1), class = "b", dpar = "hu"),
@@ -1896,7 +1827,6 @@ loo(brms_hurdle_combined)
 
 
 ##### FULL SSB PREVALENCE MODEL WITH ALL PREDICTORS - model failed due to small sample size and limited variance in predictors #####
-# --- 1) Species intersection ---
 intersected_species <- Reduce(intersect, list(
   rownames(env_traits_subset),
   rownames(lifehist_traits_subset),
@@ -1911,7 +1841,6 @@ env_final      <- env_traits_subset[intersected_species, , drop = FALSE]
 lifehist_final <- lifehist_traits_subset[intersected_species, , drop = FALSE]
 social_final   <- social_traits_subset[intersected_species, , drop = FALSE]
 
-# --- 2) Meta variables (set rownames safely; don't use column_to_rownames on df w/ rownames) ---
 meta_vars <- ssbdata %>%
   filter(nexus_name %in% intersected_species) %>%
   select(nexus_name, group_structure, hierarchical_structure, mating_system, infant_rearing_strategy) %>%
@@ -1947,7 +1876,6 @@ meta_vars$mating_system_collapsed <- factor(meta_vars$mating_system_collapsed,
 meta_vars$infant_rearing_collapsed <- factor(meta_vars$infant_rearing_collapsed,
                                              levels = c("maternal","all-parental","other-parent"))
 
-# --- 3) Build combined prevalence dataframe (FIX: species_from_data -> intersected_species) ---
 combined_df_prevalence <- data.frame(
   ssb_prevalence = ssbdata[intersected_species, "ssb_prevalence"],
   env_final,
@@ -1958,7 +1886,6 @@ combined_df_prevalence <- data.frame(
 )
 combined_df_prevalence <- combined_df_prevalence[!is.na(combined_df_prevalence$ssb_prevalence), , drop = FALSE]
 
-# --- 4) Prune & align tree ---
 final_tree_prevalence <- drop.tip(
   pruned_ssb_tree,
   setdiff(pruned_ssb_tree$tip.label, rownames(combined_df_prevalence))
@@ -1966,17 +1893,14 @@ final_tree_prevalence <- drop.tip(
 combined_df_prevalence <- combined_df_prevalence[final_tree_prevalence$tip.label, , drop = FALSE]
 stopifnot(identical(rownames(combined_df_prevalence), final_tree_prevalence$tip.label))
 
-# Drop unused factor levels post-filter
 fac_cols <- c("group_structure_collapsed","hierarchy_collapsed",
               "mating_system_collapsed","infant_rearing_collapsed")
 for (cc in fac_cols) {
   combined_df_prevalence[[cc]] <- droplevels(combined_df_prevalence[[cc]])
 }
 
-# Auto-drop any factor that collapsed to a single level
 keep_fac <- fac_cols[sapply(combined_df_prevalence[fac_cols], function(x) is.factor(x) && nlevels(x) > 1)]
 
-# --- 5) Fit model (Gaussian phylolm with λ) ---
 rhs_terms <- c("mean_temp_2019","mean_precip_2019","mean_cloud_2019","mean_biomass_2019",
                "predator_count","sexual_dimorphism","median_body_mass","bodymass_range",
                "lifespan","adult_sex_ratio","group_size", keep_fac)
